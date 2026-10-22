@@ -1,0 +1,3165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GolfCart Link — Find Your Ride. Book Your Cart.</title>
+<style>
+  :root {
+    --primary: #1a7f4b; --primary-dark: #146339; --primary-light: #e7f5ec;
+    --accent: #d4a017; --accent-light: #fdf6e3;
+    --bg: #f8faf9; --card: #ffffff; --text: #1a1a1a; --muted: #6b7280;
+    --border: #e5e7eb; --danger: #dc2626; --success: #16a34a;
+    --info: #2563eb; --purple: #7c3aed; --warn: #d97706;
+    --wa: #25d366; --wa-dark: #128c7e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.55; min-height: 100vh; }
+
+  header { background: var(--primary); color: white; padding: 0.9rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .brand { display: flex; align-items: center; gap: 0.7rem; }
+  .brand-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.16);
+    border-radius: 11px; display: flex; align-items: center; justify-content: center;
+    padding: 5px; flex-shrink: 0; }
+  .brand-icon svg { width: 100%; height: 100%; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.12; }
+  .brand-name { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em; }
+  .brand-tagline { font-size: 0.68rem; font-weight: 500; opacity: 0.85;
+    letter-spacing: 0.04em; text-transform: uppercase; }
+  .header-right { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; }
+  .user-chip { display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.15); padding: 0.35rem 0.75rem;
+    border-radius: 999px; font-size: 0.82rem; border: 1px solid rgba(255,255,255,0.2); }
+  .user-chip .role-tag { font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.05em; opacity: 0.85; padding: 0.1rem 0.4rem;
+    background: rgba(0,0,0,0.22); border-radius: 4px; }
+  .logout-btn { background: rgba(255,255,255,0.15); color: white;
+    border: 1px solid rgba(255,255,255,0.3); padding: 0.35rem 0.75rem;
+    border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 500; }
+  .logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+  .notif-btn {
+    position: relative;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white; width: 34px; height: 34px;
+    border-radius: 8px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .notif-btn:hover { background: rgba(255,255,255,0.28); }
+  .notif-btn svg { width: 18px; height: 18px; }
+  .notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--danger); color: white;
+    font-size: 0.62rem; font-weight: 800;
+    min-width: 17px; height: 17px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px; border: 2px solid var(--primary);
+  }
+
+  .login-icons { display: flex; gap: 0.35rem; align-items: center; }
+  .login-icon-btn { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.24);
+    color: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; padding: 0; opacity: 0.8; }
+  .login-icon-btn:hover { background: rgba(255,255,255,0.3); opacity: 1; transform: translateY(-1px); }
+  .login-icon-btn svg { width: 14px; height: 14px; }
+  .login-icon-btn.admin-key { color: #fde68a; }
+  .login-icon-btn.company-door { color: #bfdbfe; }
+  .login-icon-btn.agent-shield { color: #ddd6fe; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .card { background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.35rem; margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+  .card h2 { font-size: 1.1rem; margin-bottom: 0.85rem; color: var(--primary-dark); }
+
+  label { display: block; font-size: 0.85rem; font-weight: 500;
+    margin-bottom: 0.3rem; color: #374151; }
+  input, select, textarea { width: 100%; padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border); border-radius: 7px; font-size: 0.92rem;
+    font-family: inherit; margin-bottom: 0.85rem; background: white;
+    transition: border-color 0.15s, box-shadow 0.15s; }
+  input:focus, select:focus, textarea:focus { outline: none;
+    border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,127,75,0.12); }
+
+  button.btn { background: var(--primary); color: white; border: none;
+    padding: 0.7rem 1.3rem; border-radius: 7px; cursor: pointer;
+    font-size: 0.92rem; font-weight: 600;
+    transition: background 0.15s, transform 0.05s; }
+  button.btn:hover { background: var(--primary-dark); }
+  button.btn:active { transform: scale(0.98); }
+  button.btn:disabled { background: #9ca3af; cursor: not-allowed; }
+  button.btn.secondary { background: #e5e7eb; color: var(--text); }
+  button.btn.secondary:hover { background: #d1d5db; }
+  button.btn.danger { background: var(--danger); }
+  button.btn.danger:hover { background: #b91c1c; }
+  button.btn.success { background: var(--success); }
+  button.btn.success:hover { background: #15803d; }
+  button.btn.info { background: var(--info); }
+  button.btn.info:hover { background: #1d4ed8; }
+  button.btn.purple { background: var(--purple); }
+  button.btn.purple:hover { background: #6d28d9; }
+  button.btn.warn { background: var(--warn); }
+  button.btn.warn:hover { background: #b45309; }
+  button.btn.wa { background: var(--wa); }
+  button.btn.wa:hover { background: var(--wa-dark); }
+  button.btn.small { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .badge { display: inline-block; padding: 0.15rem 0.55rem;
+    border-radius: 999px; font-size: 0.72rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.03em; }
+  .badge.new { background: #dbeafe; color: #1e40af; }
+  .badge.matching { background: #fef3c7; color: #92400e; }
+  .badge.sent { background: #e0e7ff; color: #3730a3; }
+  .badge.confirmed, .badge.accepted, .badge.available, .badge.active { background: #dcfce7; color: #166534; }
+  .badge.completed { background: #d1fae5; color: #065f46; }
+  .badge.declined, .badge.suspended { background: #fee2e2; color: #991b1b; }
+  .badge.pending { background: #fef3c7; color: #92400e; }
+  .badge.rented { background: #dbeafe; color: #1e40af; }
+  .badge.maintenance { background: #fef3c7; color: #92400e; }
+  .badge.hot { background: #dcfce7; color: #166534; }
+  .badge.warm { background: #fef3c7; color: #92400e; }
+  .badge.cold { background: #fee2e2; color: #991b1b; }
+  .badge.star { background: #fef3c7; color: #92400e; }
+  .badge.fleet { background: #ede9fe; color: #5b21b6; }
+  .badge.paid { background: #dcfce7; color: #166534; }
+  .badge.pay-pending { background: #fef3c7; color: #92400e; }
+  .badge.outstanding { background: #fee2e2; color: #991b1b; }
+  .badge.concierge { background: #ede9fe; color: #5b21b6; }
+
+  .item { border: 1px solid var(--border); border-radius: 9px;
+    padding: 0.9rem 1.05rem; margin-bottom: 0.65rem; background: white; }
+  .item-header { display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+  .item-title { font-weight: 600; font-size: 0.95rem; }
+  .item-meta { font-size: 0.82rem; color: var(--muted); }
+  .item-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.55rem; }
+  .empty { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 0.9rem; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem; margin-bottom: 1rem; }
+  .stat { background: white; border: 1px solid var(--border);
+    border-radius: 9px; padding: 0.85rem; text-align: center; }
+  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+  .stat .lbl { font-size: 0.72rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .banner { padding: 0.75rem 1rem; border-radius: 7px; font-size: 0.86rem;
+    margin-bottom: 1rem; display: none; }
+  .banner.success { background: #dcfce7; color: #166534; border: 1px solid #86efac; display: block; }
+  .banner.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; display: block; }
+  .banner.info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; display: block; }
+
+  .pii-lock { background: var(--accent-light); border: 1px solid #fcd34d;
+    padding: 0.55rem 0.8rem; border-radius: 7px; font-size: 0.79rem;
+    color: #92400e; margin-bottom: 0.65rem; }
+
+  .contact-box {
+    background: #f0fdf4; border: 1px solid #86efac;
+    border-radius: 8px; padding: 0.75rem 0.9rem; margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+  .contact-box .lbl { font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: #166534; margin-bottom: 0.4rem; }
+  .contact-box .row { display: flex; gap: 0.5rem; padding: 0.15rem 0;
+    font-size: 0.85rem; align-items: baseline; }
+  .contact-box .row .k { color: #166534; font-weight: 600;
+    min-width: 55px; flex-shrink: 0; }
+  .contact-box .row .v { color: #1a1a1a; word-break: break-word; }
+  .contact-box .row a { color: var(--primary); font-weight: 600; }
+
+  /* Provider contact shown to CUSTOMER */
+  .customer-provider-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 2px solid #86efac;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.87rem;
+  }
+  .customer-provider-box .cpb-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: #166534; margin-bottom: 0.5rem;
+  }
+  .customer-provider-box .cpb-header svg { width: 16px; height: 16px; }
+  .customer-provider-box .cpb-name {
+    font-size: 1rem; font-weight: 700; color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+  .customer-provider-box .cpb-row {
+    display: flex; gap: 0.5rem; padding: 0.2rem 0;
+    font-size: 0.86rem; align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .customer-provider-box .cpb-row .k {
+    color: #166534; font-weight: 600; min-width: 55px;
+  }
+  .customer-provider-box .cpb-row .v a {
+    color: var(--primary); font-weight: 600;
+  }
+  .customer-provider-box .cpb-cta {
+    margin-top: 0.65rem; font-size: 0.78rem; color: #166534;
+    background: rgba(255,255,255,0.7);
+    padding: 0.4rem 0.6rem; border-radius: 6px;
+    font-style: italic;
+  }
+
+  .bill-line {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 0.75rem; padding: 0.65rem 0;
+    border-bottom: 1px dashed var(--border); flex-wrap: wrap;
+  }
+  .bill-line:last-child { border-bottom: none; }
+  .bill-line .desc { flex: 1; min-width: 180px; font-size: 0.86rem; }
+  .bill-line .desc strong { display: block; font-size: 0.92rem; margin-bottom: 0.15rem; }
+  .bill-line .amt { font-weight: 700; text-align: right; font-size: 0.95rem; white-space: nowrap; }
+  .bill-line .amt.owed { color: var(--danger); }
+  .bill-line .amt.covered { color: var(--success); font-size: 0.82rem; font-weight: 600; }
+
+  .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white; border-radius: 16px; padding: 3rem 1.5rem 2.5rem;
+    margin-bottom: 1.5rem; text-align: center; position: relative;
+    overflow: hidden; box-shadow: 0 8px 24px rgba(20, 99, 57, 0.25); }
+  .hero::before { content: ''; position: absolute; right: -60px; bottom: -60px;
+    width: 260px; height: 260px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; left: -50px; top: -50px;
+    width: 180px; height: 180px; background: rgba(212,160,23,0.15); border-radius: 50%; }
+  .hero-inner { position: relative; z-index: 1; }
+  .hero-icon { width: 72px; height: 72px; background: rgba(255,255,255,0.15);
+    border-radius: 18px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem; padding: 12px; border: 2px solid rgba(255,255,255,0.25); }
+  .hero-icon svg { width: 100%; height: 100%; color: white; }
+  .hero h1 { font-size: 2rem; margin-bottom: 0.4rem; font-weight: 800; letter-spacing: -0.02em; }
+  .hero .tagline { font-size: 1.05rem; font-weight: 500; color: #fde68a;
+    margin-bottom: 0.85rem; letter-spacing: 0.02em; }
+  .hero p.sub { opacity: 0.92; font-size: 0.96rem; max-width: 480px; margin: 0 auto; }
+
+  .trust-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem; }
+  .trust-badge { background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 0.75rem; text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .trust-badge .tb-icon { width: 36px; height: 36px; background: var(--primary-light);
+    color: var(--primary); border-radius: 10px; display: flex;
+    align-items: center; justify-content: center; margin: 0 auto 0.5rem; padding: 8px; }
+  .trust-badge .tb-icon svg { width: 100%; height: 100%; }
+  .trust-badge .tb-title { font-size: 0.86rem; font-weight: 700; color: var(--text); margin-bottom: 0.15rem; }
+  .trust-badge .tb-desc { font-size: 0.75rem; color: var(--muted); }
+
+  .steps-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem; margin: 1.5rem 0; }
+  .step-card { background: white; border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+    position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .step-num { width: 32px; height: 32px; background: var(--primary);
+    color: white; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-weight: 700;
+    font-size: 0.9rem; margin: 0 auto 0.65rem; }
+  .step-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .step-desc { font-size: 0.79rem; color: var(--muted); line-height: 1.4; }
+
+  .section-heading { font-size: 1.15rem; font-weight: 700;
+    color: var(--primary-dark); margin: 1.5rem 0 0.25rem; text-align: center; }
+  .section-sub { text-align: center; color: var(--muted);
+    font-size: 0.88rem; margin-bottom: 0.85rem; }
+
+  .toggle-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .toggle-row button { padding: 0.4rem 0.8rem; border: 1px solid var(--border);
+    background: white; border-radius: 7px; cursor: pointer;
+    font-size: 0.8rem; font-weight: 500; }
+  .toggle-row button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  .divider { height: 1px; background: var(--border); margin: 1rem 0; }
+  .flex-between { display: flex; justify-content: space-between;
+    align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .muted { color: var(--muted); font-size: 0.82rem; }
+
+  .company-stat-card {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.85rem 1rem; border: 1px solid var(--border);
+    border-radius: 9px; margin-bottom: 0.5rem; background: white;
+    gap: 0.75rem; flex-wrap: wrap;
+  }
+  .company-stat-card.hot { border-left: 4px solid var(--success); }
+  .company-stat-card.warm { border-left: 4px solid var(--accent); }
+  .company-stat-card.cold { border-left: 4px solid var(--danger); }
+  .company-stat-card.star { border-left: 4px solid var(--accent); background: #fffbeb; }
+  .company-stat-card .c-left { flex: 1; min-width: 200px; }
+  .company-stat-card .c-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.15rem; }
+  .company-stat-card .c-meta { font-size: 0.8rem; color: var(--muted); }
+  .company-stat-card .c-numbers { text-align: right; white-space: nowrap; }
+  .company-stat-card .c-num { font-size: 1.3rem; font-weight: 800; color: var(--primary); line-height: 1; }
+  .company-stat-card .c-num-lbl { font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--muted); }
+
+  .ai-tip {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b; border-radius: 10px;
+    padding: 0.9rem 1.1rem; margin-bottom: 0.65rem;
+    font-size: 0.87rem;
+  }
+  .ai-tip .ai-label { font-size: 0.68rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: #92400e; margin-bottom: 0.3rem;
+    display: flex; align-items: center; gap: 0.35rem; }
+  .ai-tip .ai-label svg { width: 13px; height: 13px; }
+  .ai-tip .ai-body { color: #78350f; line-height: 1.5; }
+  .ai-tip .ai-body strong { color: #451a03; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 1000; align-items: center;
+    justify-content: center; padding: 1rem; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: white; border-radius: 14px; width: 100%;
+    max-width: 440px; padding: 1.6rem; box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-size: 1.15rem; margin-bottom: 0.3rem;
+    color: var(--primary-dark); display: flex; align-items: center; gap: 0.5rem; }
+  .modal .subtitle { font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem; }
+  .modal .close-row { display: flex; justify-content: flex-end;
+    gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .modal-error { background: #fee2e2; color: #991b1b;
+    padding: 0.55rem 0.8rem; border-radius: 7px; font-size: 0.82rem;
+    margin-bottom: 0.85rem; display: none; }
+  .modal-error.show { display: block; }
+
+  .setup-icon { width: 68px; height: 68px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 16px; display: flex; align-items: center;
+    justify-content: center; margin: 0 auto 1rem; padding: 12px;
+    box-shadow: 0 8px 20px rgba(20,99,57,0.3); }
+  .setup-icon svg { width: 100%; height: 100%; color: white; }
+  .setup-hero { text-align: center; padding: 0.25rem 0 1rem; }
+  .setup-hero h2 { font-size: 1.3rem; margin-bottom: 0.4rem;
+    color: var(--primary-dark); font-weight: 800; }
+  .setup-hero p { color: var(--muted); font-size: 0.85rem; }
+
+  .acct-row { display: flex; justify-content: space-between; align-items: center;
+    padding: 0.65rem 0.85rem; border: 1px solid var(--border);
+    border-radius: 7px; margin-bottom: 0.45rem; gap: 0.5rem; flex-wrap: wrap; }
+  .acct-row .who { flex: 1; min-width: 180px; }
+  .acct-row .who strong { display: block; font-size: 0.9rem; }
+  .acct-row .who small { color: var(--muted); font-size: 0.78rem; }
+
+  .role-pill { font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.15rem 0.55rem;
+    border-radius: 999px; font-weight: 700; }
+  .role-pill.ADMIN { background: #fef3c7; color: #92400e; }
+  .role-pill.AGENT { background: #ede9fe; color: #5b21b6; }
+  .role-pill.COMPANY { background: #dbeafe; color: #1e40af; }
+
+  .bio-btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    width: 100%; padding: 0.85rem; margin-top: 0.5rem;
+    background: var(--primary-light); color: var(--primary-dark);
+    border: 2px solid var(--primary); border-radius: 9px;
+    cursor: pointer; font-size: 0.92rem; font-weight: 700;
+    transition: background 0.15s;
+  }
+  .bio-btn:hover { background: #d1fae5; }
+  .bio-btn svg { width: 22px; height: 22px; }
+
+  .fleet-card {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border: 1px solid #c4b5fd; border-radius: 10px;
+    padding: 1rem 1.15rem;
+  }
+  .fleet-card .fc-left { flex: 1; min-width: 200px; }
+  .fleet-card .fc-title { font-weight: 800; font-size: 0.95rem; color: #4c1d95; margin-bottom: 0.2rem; }
+  .fleet-card .fc-desc { font-size: 0.8rem; color: #6b21a8; }
+  .fleet-card .fc-right { display: flex; align-items: center; gap: 0.5rem; }
+  .fleet-card input {
+    width: 110px; margin: 0; font-size: 1rem; font-weight: 700;
+    text-align: center; padding: 0.5rem;
+  }
+
+  .notif-panel {
+    position: fixed; top: 70px; right: 20px;
+    width: 380px; max-width: calc(100vw - 40px);
+    max-height: 75vh;
+    background: white; border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    z-index: 999; display: none; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .notif-panel.show { display: flex; flex-direction: column; }
+  .notif-panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.85rem 1rem; background: var(--primary-light);
+    border-bottom: 1px solid var(--border);
+  }
+  .notif-panel-header h3 { font-size: 0.95rem; color: var(--primary-dark); }
+  .notif-panel-header button {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 0.78rem; font-weight: 600;
+    padding: 0.25rem 0.5rem; border-radius: 4px;
+  }
+  .notif-panel-header button:hover { background: rgba(0,0,0,0.05); color: var(--primary-dark); }
+  .notif-list { flex: 1; overflow-y: auto; padding: 0.5rem; }
+  .notif-item {
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.35rem;
+    font-size: 0.83rem;
+    border-left: 3px solid var(--info);
+    background: #f8fafc;
+  }
+  .notif-item.unread { background: #eff6ff; border-left-color: var(--info); }
+  .notif-item.read { background: #f9fafb; border-left-color: var(--border); opacity: 0.8; }
+  .notif-item.info { border-left-color: var(--info); }
+  .notif-item.success { border-left-color: var(--success); }
+  .notif-item.warn { border-left-color: var(--warn); }
+  .notif-item.error { border-left-color: var(--danger); }
+  .notif-item .ni-title { font-weight: 700; font-size: 0.82rem; margin-bottom: 0.15rem; }
+  .notif-item .ni-body { color: #374151; font-size: 0.79rem; line-height: 1.4; }
+  .notif-item .ni-time { color: var(--muted); font-size: 0.72rem; margin-top: 0.25rem; }
+  .notif-item .ni-badge {
+    display: inline-block; padding: 0.1rem 0.4rem;
+    border-radius: 999px; font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-right: 0.3rem;
+  }
+  .notif-item .ni-badge.email { background: #dbeafe; color: #1e40af; }
+  .notif-item .ni-badge.whatsapp { background: #d1fae5; color: #065f46; }
+  .notif-item .ni-badge.inapp { background: #ede9fe; color: #5b21b6; }
+  .notif-empty { text-align: center; color: var(--muted); padding: 2rem 1rem; font-size: 0.85rem; }
+
+  .toast-container {
+    position: fixed; bottom: 20px; right: 20px;
+    display: flex; flex-direction: column-reverse; gap: 0.5rem;
+    z-index: 2000; pointer-events: none;
+    max-width: 380px;
+  }
+  .toast {
+    background: white; border-radius: 10px;
+    padding: 0.85rem 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    border-left: 4px solid var(--info);
+    display: flex; gap: 0.65rem; align-items: flex-start;
+    pointer-events: auto;
+    animation: slideIn 0.3s ease-out;
+    min-width: 300px;
+  }
+  .toast.success { border-left-color: var(--success); }
+  .toast.warn { border-left-color: var(--warn); }
+  .toast.error { border-left-color: var(--danger); }
+  .toast.info { border-left-color: var(--info); }
+  .toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .toast-body { flex: 1; }
+  .toast-title { font-weight: 700; font-size: 0.86rem; margin-bottom: 0.15rem; }
+  .toast-msg { font-size: 0.8rem; color: #374151; line-height: 1.4; }
+  @keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .contact-info-row {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    font-size: 0.78rem; color: var(--muted);
+    margin-top: 0.2rem;
+  }
+  .contact-info-row .ci-item {
+    display: flex; align-items: center; gap: 0.25rem;
+  }
+  .contact-info-row .ci-item.set { color: var(--success); font-weight: 600; }
+  .contact-info-row .ci-item.missing { color: var(--warn); font-weight: 600; }
+
+  /* ---- FINANCE ---- */
+  .finance-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem; margin-bottom: 1rem;
+  }
+  .finance-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .finance-card.paid { background: #f0fdf4; border-color: #86efac; }
+  .finance-card.pending { background: #fefce8; border-color: #fde68a; }
+  .finance-card.outstanding { background: #fef2f2; border-color: #fecaca; }
+  .finance-card .fc-amount {
+    font-size: 1.5rem; font-weight: 800; line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .finance-card.paid .fc-amount { color: var(--success); }
+  .finance-card.pending .fc-amount { color: var(--warn); }
+  .finance-card.outstanding .fc-amount { color: var(--danger); }
+  .finance-card .fc-label {
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--muted); font-weight: 700;
+  }
+
+  .company-finance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    margin-bottom: 0.5rem;
+    background: white;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .company-finance-row.paid { border-left: 4px solid var(--success); }
+  .company-finance-row.pending { border-left: 4px solid var(--warn); }
+  .company-finance-row.outstanding { border-left: 4px solid var(--danger); }
+  .cfr-left { flex: 1; min-width: 200px; }
+  .cfr-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.15rem; }
+  .cfr-meta { font-size: 0.78rem; color: var(--muted); }
+  .cfr-amount {
+    font-size: 1.15rem; font-weight: 800; white-space: nowrap;
+    text-align: right;
+  }
+  .cfr-amount.paid { color: var(--success); }
+  .cfr-amount.pending { color: var(--warn); }
+  .cfr-amount.outstanding { color: var(--danger); }
+  .cfr-actions {
+    display: flex; gap: 0.35rem; flex-wrap: wrap;
+  }
+
+  .payment-history {
+    margin-top: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    color: var(--muted);
+    border-left: 3px solid var(--border);
+  }
+  .payment-history .ph-line {
+    padding: 0.2rem 0;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    align-items: baseline;
+  }
+  .payment-history .ph-line strong { color: var(--text); font-size: 0.78rem; }
+  .payment-history .ph-line .ph-time { font-size: 0.72rem; opacity: 0.75; }
+
+  /* ---- CONCIERGE / ACTIVITIES ---- */
+  .activities-hero {
+    background: linear-gradient(135deg, #ede9fe 0%, #c4b5fd 100%);
+    border-radius: 14px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid #a78bfa;
+    position: relative;
+    overflow: hidden;
+  }
+  .activities-hero h3 {
+    font-size: 1.1rem; color: #4c1d95;
+    font-weight: 800; margin-bottom: 0.25rem;
+  }
+  .activities-hero p {
+    font-size: 0.85rem; color: #6b21a8;
+    margin-bottom: 0.85rem; line-height: 1.4;
+  }
+  .activity-chips {
+    display: flex; gap: 0.4rem; flex-wrap: wrap;
+    margin-bottom: 0.85rem;
+  }
+  .activity-chip {
+    background: white;
+    border: 1px solid #a78bfa;
+    color: #6b21a8;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 0.3rem;
+    user-select: none;
+  }
+  .activity-chip:hover {
+    background: #f5f3ff;
+    transform: translateY(-1px);
+  }
+  .activity-chip.selected {
+    background: #7c3aed;
+    color: white;
+    border-color: #7c3aed;
+  }
+  .activity-chip svg { width: 14px; height: 14px; }
+
+  .activity-custom-row {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 0.65rem;
+  }
+  .activity-custom-row input { flex: 1; margin: 0; }
+  .activity-message-box {
+    width: 100%;
+    min-height: 90px;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Concierge status badges (admin) */
+  .badge.con-noted { background: #dbeafe; color: #1e40af; }
+  .badge.con-progress { background: #fef3c7; color: #92400e; }
+  .badge.con-booked { background: #dcfce7; color: #166534; }
+  .badge.con-declined { background: #fee2e2; color: #991b1b; }
+
+  /* Customer view privacy hint */
+  .private-hint {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: #eff6ff; border: 1px solid #bfdbfe;
+    border-radius: 8px; padding: 0.6rem 0.8rem;
+    font-size: 0.78rem; color: #1e40af;
+    margin-bottom: 0.75rem;
+  }
+  .private-hint svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .empty-state-illustration {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+  .empty-state-illustration .esi-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 0.75rem;
+    background: var(--primary-light);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+    padding: 12px;
+  }
+  .empty-state-illustration .esi-icon svg { width: 100%; height: 100%; }
+  .empty-state-illustration .esi-title {
+    font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;
+  }
+  .empty-state-illustration .esi-desc {
+    font-size: 0.82rem; color: var(--muted); max-width: 320px; margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 11 L33 11"/><path d="M9 11 L9 16"/><path d="M31 11 L31 16"/>
+        <path d="M9 17 L31 17 L31 25 L9 25 Z"/><path d="M13 17 L13 21"/>
+        <circle cx="28" cy="14" r="1.2" fill="white" stroke="none"/>
+        <path d="M28 15.2 L28 17"/><path d="M31 19 L36 19 L36 24 L31 24"/>
+        <path d="M33 19 L33 24"/>
+        <circle cx="15" cy="30" r="4" fill="white" stroke="none"/>
+        <circle cx="15" cy="30" r="4" stroke="var(--primary)"/>
+        <circle cx="15" cy="30" r="1.4" fill="var(--primary)" stroke="none"/>
+        <circle cx="28" cy="30" r="4" fill="white" stroke="none"/>
+        <circle cx="28" cy="30" r="4" stroke="var(--primary)"/>
+        <circle cx="28" cy="30" r="1.4" fill="var(--primary)" stroke="none"/>
+        <path d="M15 26 L15 25"/><path d="M28 26 L28 25"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <div class="brand-name">GolfCart Link</div>
+      <div class="brand-tagline">Find Your Ride. Book Your Cart.</div>
+    </div>
+  </div>
+  <div class="header-right" id="headerRight"></div>
+</header>
+
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-header">
+    <h3>🔔 Notifications</h3>
+    <div style="display:flex;gap:0.3rem;">
+      <button onclick="markAllRead()">Mark all read</button>
+      <button onclick="closeNotifPanel()" style="font-size:1rem;">✕</button>
+    </div>
+  </div>
+  <div class="notif-list" id="notifList"></div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<main>
+
+  <div id="view-public" class="view active">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-icon">
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 11 L33 11"/><path d="M9 11 L9 16"/><path d="M31 11 L31 16"/>
+            <path d="M9 17 L31 17 L31 25 L9 25 Z"/><path d="M13 17 L13 21"/>
+            <circle cx="28" cy="14" r="1.2" fill="currentColor" stroke="none"/>
+            <path d="M28 15.2 L28 17"/><path d="M31 19 L36 19 L36 24 L31 24"/>
+            <path d="M33 19 L33 24"/>
+            <circle cx="15" cy="30" r="4" fill="currentColor" stroke="none"/>
+            <circle cx="15" cy="30" r="1.4" fill="white" stroke="none"/>
+            <circle cx="28" cy="30" r="4" fill="currentColor" stroke="none"/>
+            <circle cx="28" cy="30" r="1.4" fill="white" stroke="none"/>
+            <path d="M15 26 L15 25"/><path d="M28 26 L28 25"/>
+          </svg>
+        </div>
+        <h1>GolfCart Link</h1>
+        <div class="tagline">Find Your Ride. Book Your Cart.</div>
+        <p class="sub">Request a golf cart in seconds — we'll match you with a trusted local provider.</p>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-badge">
+        <div class="tb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="tb-title">Vetted Providers</div>
+        <div class="tb-desc">Only approved companies</div>
+      </div>
+      <div class="trust-badge">
+        <div class="tb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <div class="tb-title">Fast Response</div>
+        <div class="tb-desc">Matched within hours</div>
+      </div>
+      <div class="trust-badge">
+        <div class="tb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <div class="tb-title">Private & Secure</div>
+        <div class="tb-desc">Your info stays safe</div>
+      </div>
+      <div class="trust-badge">
+        <div class="tb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="tb-title">No Hidden Fees</div>
+        <div class="tb-desc">Transparent pricing</div>
+      </div>
+    </div>
+
+    <div class="section-heading">How It Works</div>
+    <div class="section-sub">Three simple steps to your ride</div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Tell Us What You Need</div>
+        <div class="step-desc">Fill in your dates and choose a 4- or 6-seater.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">We Find Your Match</div>
+        <div class="step-desc">We check availability with our trusted rental partners.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Get Your Cart</div>
+        <div class="step-desc">Your provider's contact info appears here once matched.</div>
+      </div>
+    </div>
+
+    <div class="banner" id="customerBanner"></div>
+    <div class="card">
+      <h2>Request a Golf Cart</h2>
+      <form id="requestForm">
+        <div class="grid-2">
+          <div><label>Your Name</label><input type="text" id="custName" required placeholder="Full name" /></div>
+          <div><label>Email</label><input type="email" id="custEmail" required placeholder="you@example.com" /></div>
+        </div>
+        <div class="grid-2">
+          <div><label>Phone</label><input type="tel" id="custPhone" required placeholder="(555) 123-4567" /></div>
+          <div><label>Seat Count</label>
+            <select id="custSeats" required><option value="4">4-Seater</option><option value="6">6-Seater</option></select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div><label>Start Date</label><input type="date" id="custStart" required /></div>
+          <div><label>End Date</label><input type="date" id="custEnd" required /></div>
+        </div>
+        <label>Notes (optional)</label>
+        <textarea id="custNotes" rows="2" placeholder="Delivery location, special requests..."></textarea>
+        <button type="submit" class="btn" style="width:100%; padding:0.8rem;">Request My Cart</button>
+      </form>
+    </div>
+
+    <!-- CONCIERGE ACTIVITIES -->
+    <div class="activities-hero">
+      <h3>🎉 Need more than a cart?</h3>
+      <p>Once you've got your ride, we can help you plan the fun stuff too. Tap what you're interested in and we'll get back to you with options.</p>
+      <div class="activity-chips" id="activityChips">
+        <div class="activity-chip" data-activity="Snorkeling" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          Snorkeling
+        </div>
+        <div class="activity-chip" data-activity="Fishing" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12c0-3 3-6 8-6 4 0 7 2 8 4-1 2-4 4-8 4-5 0-8-3-8-6zM6 12l-3-3M6 12l-3 3"/></svg>
+          Fishing
+        </div>
+        <div class="activity-chip" data-activity="Diving" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2 2"/></svg>
+          Diving
+        </div>
+        <div class="activity-chip" data-activity="Restaurant Reservations" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2v6a3 3 0 0 0 6 0V2M8 2v20M17 2v20M17 8c0-3 0-6 0-6"/></svg>
+          Restaurant
+        </div>
+        <div class="activity-chip" data-activity="Boating" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18l-3-8H6zM6 15l-1 4h14l-1-4"/></svg>
+          Boating
+        </div>
+        <div class="activity-chip" data-activity="Tours" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z"/></svg>
+          Tours
+        </div>
+        <div class="activity-chip" data-activity="Massage & Spa" onclick="toggleActivity(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+          Spa
+        </div>
+      </div>
+      <div class="activity-custom-row">
+        <input type="text" id="customActivity" placeholder="Or type your own (e.g. sunset cruise)" />
+      </div>
+      <textarea id="activityMessage" class="activity-message-box" placeholder="Tell us a bit more — dates, group size, anything we should know."></textarea>
+      <button class="btn" style="width:100%; background:#7c3aed;" onclick="submitActivityRequest()">Request Activities</button>
+    </div>
+
+    <!-- CUSTOMER'S OWN REQUESTS -->
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Your Requests</h2>
+        <button class="btn small secondary" onclick="forgetMyData()" title="Wipes your requests from this browser only">Clear my data</button>
+      </div>
+      <div class="private-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Your requests are private — only visible on this browser. No one else can see them.</span>
+      </div>
+      <div id="customerRequests"></div>
+      <div id="customerActivities"></div>
+    </div>
+  </div>
+
+  <div id="view-company" class="view">
+    <div class="banner" id="companyBanner"></div>
+    <div class="flex-between" style="margin-bottom:1rem;">
+      <h2 style="font-size:1.2rem;" id="companyNameHeading">Company Dashboard</h2>
+    </div>
+    <div class="stat-row" id="companyStats"></div>
+
+    <div class="card">
+      <h2>Total Fleet Size</h2>
+      <div class="fleet-card">
+        <div class="fc-left">
+          <div class="fc-title">How many golf carts does your company own in total?</div>
+          <div class="fc-desc">This helps us match you with the right-sized groups. Edit anytime.</div>
+        </div>
+        <div class="fc-right">
+          <input type="number" id="fleetTotalInput" min="0" step="1" placeholder="0" />
+          <button class="btn small" onclick="saveFleetTotal()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Notification Contacts</h2>
+      <div class="muted" style="margin-bottom:0.75rem;">Add your email and WhatsApp so we can alert you instantly on every new booking lead — even if you're not logged in.</div>
+      <div class="grid-2">
+        <div>
+          <label>Email for Notifications</label>
+          <input type="email" id="companyNotifEmail" placeholder="bookings@yourcompany.com" />
+        </div>
+        <div>
+          <label>WhatsApp Number (with country code)</label>
+          <input type="tel" id="companyNotifPhone" placeholder="+1 305 555 0101" />
+        </div>
+      </div>
+      <button class="btn small" onclick="saveNotifContacts('company')">Save Notification Contacts</button>
+    </div>
+
+    <div class="card">
+      <h2>Inventory</h2>
+      <div class="muted" style="margin-bottom:0.75rem;">Add carts and mark their status. Changes sync instantly.</div>
+      <div class="item-actions" style="margin-bottom:0.75rem;">
+        <button class="btn small" onclick="openAddCartModal()">+ Add Cart</button>
+      </div>
+      <div id="companyInventory"></div>
+    </div>
+    <div class="card">
+      <h2>Incoming Leads</h2>
+      <div class="pii-lock">🔒 Customer contact is shared only after admin approval.</div>
+      <div id="companyLeads"></div>
+    </div>
+    <div class="card">
+      <h2>Billing</h2>
+      <div id="companyBilling"></div>
+    </div>
+  </div>
+
+  <div id="view-admin" class="view">
+    <div class="banner" id="adminBanner"></div>
+    <div class="stat-row" id="adminStats"></div>
+
+    <div class="card">
+      <h2>🔔 My Notification Contacts</h2>
+      <div class="muted" style="margin-bottom:0.75rem;">Set your email and WhatsApp to receive instant alerts on every activity — new requests, company responses, bookings.</div>
+      <div class="grid-2">
+        <div>
+          <label>Email for Notifications</label>
+          <input type="email" id="adminNotifEmail" placeholder="admin@example.com" />
+        </div>
+        <div>
+          <label>WhatsApp Number (with country code)</label>
+          <input type="tel" id="adminNotifPhone" placeholder="+1 305 555 0101" />
+        </div>
+      </div>
+      <button class="btn small" onclick="saveNotifContacts('admin')">Save Notification Contacts</button>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.75rem;">
+        <h2 style="margin:0;">🎉 Concierge Activity Requests</h2>
+      </div>
+      <div class="muted" style="margin-bottom:0.75rem;">Activities customers asked us to book — fishing, snorkeling, diving, restaurants, tours, and more.</div>
+      <div id="adminConcierge"></div>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.75rem;">
+        <h2 style="margin:0;">💰 Finance Dashboard</h2>
+      </div>
+      <div class="muted" style="margin-bottom:0.75rem;">Track commission, subscription, and per-rental payments from every company. You or an agent can mark payments paid / pending / outstanding at any time. Every change is logged.</div>
+      <div class="finance-summary" id="adminFinanceSummary"></div>
+      <div id="adminFinanceList"></div>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.75rem;">
+        <h2 style="margin:0;">📊 Rental Activity & AI Insights</h2>
+      </div>
+      <div class="muted" style="margin-bottom:0.75rem;">Live tracker of all rentals across every company, with smart recommendations on who needs business.</div>
+      <div id="aiTips"></div>
+      <div id="companyActivity"></div>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.75rem;">
+        <h2 style="margin:0;">Account Manager</h2>
+        <div class="item-actions" style="margin:0;">
+          <button class="btn small" onclick="openCreateAccountModal('COMPANY')">+ New Company</button>
+          <button class="btn small purple" onclick="openCreateAccountModal('AGENT')">+ New Agent</button>
+        </div>
+      </div>
+      <div class="muted" style="margin-bottom:0.75rem;">Create logins, edit any account, reset passwords, or suspend non-paying companies.</div>
+      <div id="accountList"></div>
+    </div>
+
+    <div class="card">
+      <h2>Rental Requests</h2>
+      <div class="toggle-row" id="adminFilters">
+        <button data-filter="all" class="active">All</button>
+        <button data-filter="NEW">New</button>
+        <button data-filter="MATCHING">Matching</button>
+        <button data-filter="SENT_TO_COMPANY">Sent</button>
+        <button data-filter="CONFIRMED">Confirmed</button>
+      </div>
+      <div id="adminRequests"></div>
+    </div>
+
+    <div class="card">
+      <h2>Companies</h2>
+      <div id="adminCompanies"></div>
+    </div>
+
+    <div class="card">
+      <h2>Bookings & Payouts</h2>
+      <div class="muted" style="margin-bottom:0.75rem;">💾 You own all customer data. Use "Clear from Company" to remove a customer from a company's portal early — otherwise it auto-clears on the rental's last day.</div>
+      <div id="adminBookings"></div>
+    </div>
+  </div>
+
+  <div id="view-agent" class="view">
+    <div class="banner info" style="display:block;">
+      👁️ You are signed in as an <strong>Agent</strong>. Read-only on accounts, but you may clear customer contact info from companies and manage finance/payment status.
+    </div>
+    <div class="stat-row" id="agentStats"></div>
+
+    <div class="card">
+      <h2>🔔 My Notification Contacts</h2>
+      <div class="muted" style="margin-bottom:0.75rem;">Set your email and WhatsApp to receive instant alerts on every activity — new requests, company responses, bookings.</div>
+      <div class="grid-2">
+        <div>
+          <label>Email for Notifications</label>
+          <input type="email" id="agentNotifEmail" placeholder="you@example.com" />
+        </div>
+        <div>
+          <label>WhatsApp Number (with country code)</label>
+          <input type="tel" id="agentNotifPhone" placeholder="+1 305 555 0101" />
+        </div>
+      </div>
+      <button class="btn small" onclick="saveNotifContacts('agent')">Save Notification Contacts</button>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.75rem;">
+        <h2 style="margin:0;">🎉 Concierge Activity Requests</h2>
+      </div>
+      <div class="muted" style="margin-bottom:0.75rem;">Customer activity requests — you can update status to keep them tracked.</div>
+      <div id="agentConcierge"></div>
+    </div>
+
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:0.75rem;">
+        <h2 style="margin:0;">💰 Finance Dashboard</h2>
+      </div>
+      <div class="muted" style="margin-bottom:0.75rem;">Track and update payments from every company. You can mark payments paid / pending / outstanding. Every change is logged with your name.</div>
+      <div class="finance-summary" id="agentFinanceSummary"></div>
+      <div id="agentFinanceList"></div>
+    </div>
+
+    <div class="card">
+      <h2>All Requests (Read-Only)</h2>
+      <div id="agentRequests"></div>
+    </div>
+    <div class="card">
+      <h2>Bookings</h2>
+      <div class="muted" style="margin-bottom:0.75rem;">You can clear customer info from a company's portal at any time.</div>
+      <div id="agentBookings"></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="modal-overlay" id="loginOverlay">
+  <div class="modal">
+    <h2 id="loginTitle">Sign In</h2>
+    <div class="subtitle" id="loginSubtitle"></div>
+    <div class="modal-error" id="loginError"></div>
+    <div id="bioLoginSection" style="display:none;">
+      <button class="bio-btn" onclick="attemptBiometricLogin()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3H5a2 2 0 0 0-2 2v2M17 3h2a2 2 0 0 1 2 2v2M7 21H5a2 2 0 0 1-2-2v-2M17 21h2a2 2 0 0 0 2-2v-2"/>
+          <circle cx="12" cy="10" r="3"/>
+          <path d="M6 21a6 6 0 0 1 12 0"/>
+        </svg>
+        <span id="bioLoginLabel">Sign in with Face ID</span>
+      </button>
+      <div class="divider"></div>
+      <div class="muted" style="text-align:center; margin-bottom:0.75rem; font-size:0.78rem;">
+        Or use your password
+      </div>
+    </div>
+    <label>Email</label>
+    <input type="email" id="loginEmail" placeholder="you@example.com" />
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="••••••••" />
+    <div class="close-row">
+      <button class="btn secondary" onclick="closeLogin()">Cancel</button>
+      <button class="btn" onclick="attemptLogin()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="setupOverlay">
+  <div class="modal">
+    <div class="setup-hero">
+      <div class="setup-icon">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 11 L33 11"/><path d="M9 11 L9 16"/><path d="M31 11 L31 16"/>
+          <path d="M9 17 L31 17 L31 25 L9 25 Z"/><path d="M13 17 L13 21"/>
+          <circle cx="28" cy="14" r="1.2" fill="currentColor" stroke="none"/>
+          <path d="M28 15.2 L28 17"/><path d="M31 19 L36 19 L36 24 L31 24"/>
+          <path d="M33 19 L33 24"/>
+          <circle cx="15" cy="30" r="4" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="30" r="1.4" fill="white" stroke="none"/>
+          <circle cx="28" cy="30" r="4" fill="currentColor" stroke="none"/>
+          <circle cx="28" cy="30" r="1.4" fill="white" stroke="none"/>
+          <path d="M15 26 L15 25"/><path d="M28 26 L28 25"/>
+        </svg>
+      </div>
+      <h2>Welcome, Admin</h2>
+      <p>Create your admin account to take full control.</p>
+    </div>
+    <div class="modal-error" id="setupError"></div>
+    <label>Your Name</label>
+    <input type="text" id="setupName" placeholder="e.g. Janet Smith" />
+    <label>Email (your login)</label>
+    <input type="email" id="setupEmail" placeholder="you@example.com" />
+    <label>Password</label>
+    <input type="password" id="setupPassword" placeholder="At least 6 characters" />
+    <label>Confirm Password</label>
+    <input type="password" id="setupPassword2" placeholder="Re-type password" />
+    <div class="close-row">
+      <button class="btn secondary" onclick="closeSetup()">Cancel</button>
+      <button class="btn" onclick="saveSetup()">Create Admin Account</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="accountOverlay">
+  <div class="modal">
+    <h2 id="accountModalTitle">Create Account</h2>
+    <div class="subtitle" id="accountModalSubtitle"></div>
+    <div class="modal-error" id="accountError"></div>
+    <label>Display Name</label>
+    <input type="text" id="acctName" placeholder="Company or agent name" />
+    <label>Email (login)</label>
+    <input type="email" id="acctEmail" placeholder="login@example.com" />
+    <label>Password</label>
+    <input type="password" id="acctPassword" placeholder="Set a password" />
+    <label>Notification Email (optional)</label>
+    <input type="email" id="acctNotifEmail" placeholder="Leave blank to use login email" />
+    <label>WhatsApp Number (with country code, optional)</label>
+    <input type="tel" id="acctNotifPhone" placeholder="+1 305 555 0101" />
+    <div id="acctCompanyFields">
+      <label>City / Location</label>
+      <input type="text" id="acctCity" placeholder="Miami, FL" />
+      <label>Website URL (optional)</label>
+      <input type="url" id="acctWebsite" placeholder="https://yourcompany.com" />
+      <label>Total Fleet Size (# of golf carts owned)</label>
+      <input type="number" id="acctFleetTotal" min="0" step="1" placeholder="e.g. 100" />
+      <label>Billing Model</label>
+      <select id="acctBilling" onchange="updateBillingRateLabel()">
+        <option value="COMMISSION">Commission (%)</option>
+        <option value="SUBSCRIPTION">Monthly Subscription ($)</option>
+        <option value="PER_RENTAL">Per-Rental Fee ($)</option>
+      </select>
+      <label id="acctRateLabel">Rate</label>
+      <input type="number" id="acctRate" step="0.01" value="0.20" />
+    </div>
+    <div class="close-row">
+      <button class="btn secondary" onclick="closeAccountModal()">Cancel</button>
+      <button class="btn" id="acctSaveBtn" onclick="saveAccount()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="resetOverlay">
+  <div class="modal">
+    <h2>Reset Password</h2>
+    <div class="subtitle" id="resetSubtitle"></div>
+    <div class="modal-error" id="resetError"></div>
+    <label>New Password</label>
+    <input type="password" id="resetPassword" placeholder="At least 6 characters" />
+    <label>Confirm New Password</label>
+    <input type="password" id="resetPassword2" placeholder="Re-type new password" />
+    <div class="close-row">
+      <button class="btn secondary" onclick="closeResetModal()">Cancel</button>
+      <button class="btn danger" onclick="saveResetPassword()">Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cartOverlay">
+  <div class="modal">
+    <h2>Add Golf Cart</h2>
+    <div class="subtitle">Add a cart to your fleet.</div>
+    <div class="modal-error" id="cartError"></div>
+    <label>Cart Label / Number</label>
+    <input type="text" id="cartLabel" placeholder="e.g. #A4" />
+    <label>Seat Count</label>
+    <select id="cartSeats">
+      <option value="4">4-Seater</option>
+      <option value="6">6-Seater</option>
+    </select>
+    <div class="close-row">
+      <button class="btn secondary" onclick="closeCartModal()">Cancel</button>
+      <button class="btn" onclick="saveCart()">Add Cart</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="bioPromptOverlay">
+  <div class="modal">
+    <div class="setup-hero" style="padding-top:0.5rem;">
+      <div class="setup-icon" style="background: linear-gradient(135deg, var(--info), #1d4ed8);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%;">
+          <path d="M7 3H5a2 2 0 0 0-2 2v2M17 3h2a2 2 0 0 1 2 2v2M7 21H5a2 2 0 0 1-2-2v-2M17 21h2a2 2 0 0 0 2-2v-2"/>
+          <circle cx="12" cy="10" r="3"/>
+          <path d="M6 21a6 6 0 0 1 12 0"/>
+        </svg>
+      </div>
+      <h2>Enable Quick Sign-In?</h2>
+      <p>Sign in next time with just your Face ID or fingerprint — no password needed.</p>
+    </div>
+    <div class="close-row" style="justify-content:center;">
+      <button class="btn secondary" onclick="declineBiometric()">Not now</button>
+      <button class="btn" onclick="acceptBiometric()">Enable Face ID / Touch</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'golfcartlink_data_v2';
+const WEBAUTHN_KEY = 'golfcartlink_biometric_v1';
+const CUSTOMER_SESSION_KEY = 'golfcartlink_customer_v1';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) { console.warn('Load failed', e); }
+  return {
+    accounts: [], companies: [], requests: [], matches: [], bookings: [],
+    notifications: [], conciergeRequests: [],
+    session: { accountId: null }, initialized: false
+  };
+}
+let data = loadData();
+data.companies.forEach(c => {
+  if (typeof c.fleetTotal === 'undefined') c.fleetTotal = 0;
+  if (typeof c.paymentStatus === 'undefined') c.paymentStatus = 'pending';
+  if (!c.paymentHistory) c.paymentHistory = [];
+  if (typeof c.website === 'undefined') c.website = '';
+});
+data.accounts.forEach(a => {
+  if (typeof a.notifEmail === 'undefined') a.notifEmail = '';
+  if (typeof a.notifPhone === 'undefined') a.notifPhone = '';
+});
+if (!data.notifications) data.notifications = [];
+if (!data.conciergeRequests) data.conciergeRequests = [];
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function uid(p = 'id') { return p + '_' + Math.random().toString(36).slice(2, 9); }
+function fmtDate(d) {
+  if (!d) return '';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function daysBetween(a, b) { return Math.max(1, Math.round((new Date(b) - new Date(a)) / 86400000)); }
+function showBanner(el, msg, type = 'success') {
+  if (!el) return;
+  el.className = 'banner ' + type;
+  el.textContent = msg;
+  setTimeout(() => { el.className = 'banner'; el.textContent = ''; }, 4500);
+}
+function currentAccount() {
+  if (!data.session.accountId) return null;
+  return data.accounts.find(a => a.id === data.session.accountId) || null;
+}
+
+/* ============================================================
+   CUSTOMER SESSION ISOLATION
+   Each visitor gets a unique ID stored in their own browser.
+   They only ever see requests that match their customerOwnerId.
+   ============================================================ */
+function getCustomerSessionId() {
+  let id = localStorage.getItem(CUSTOMER_SESSION_KEY);
+  if (!id) {
+    id = 'custsess_' + Math.random().toString(36).slice(2, 12);
+    localStorage.setItem(CUSTOMER_SESSION_KEY, id);
+  }
+  return id;
+}
+function forgetMyData() {
+  if (!confirm('Clear all your requests and activity messages from this browser?\n\nThis cannot be undone.')) return;
+  const mySession = getCustomerSessionId();
+  data.requests = data.requests.filter(r => r.customerOwnerId !== mySession);
+  data.conciergeRequests = (data.conciergeRequests || []).filter(cr => cr.customerOwnerId !== mySession);
+  save();
+  renderAll();
+}
+
+/* ============================================================
+   NOTIFICATIONS
+   ============================================================ */
+const NOTIF_ICONS = {
+  new_request: '📥', request_to_company: '📤',
+  company_accepted: '✅', company_declined: '❌',
+  contact_released: '📧', booking_completed: '🏁',
+  booking_cleared: '🔒', payment_update: '💰',
+  concierge_request: '🎉', info: 'ℹ️'
+};
+
+function notify(recipients, opts) {
+  const channels = opts.channels || ['inapp', 'email', 'whatsapp'];
+  const now = new Date().toISOString();
+  const validRecipients = (recipients || []).filter(Boolean);
+  validRecipients.forEach(acc => {
+    const notif = {
+      id: uid('notif'), accountId: acc.id,
+      type: opts.type || 'info',
+      title: opts.title || 'Notification',
+      body: opts.body || '',
+      severity: opts.severity || 'info',
+      channels, createdAt: now, read: false
+    };
+    data.notifications.push(notif);
+    const email = acc.notifEmail || acc.email;
+    const whatsapp = acc.notifPhone || '';
+    notif.deliveryStatus = {
+      email: channels.includes('email') && email ? 'sent' : 'skipped',
+      whatsapp: channels.includes('whatsapp') && whatsapp ? 'sent' : 'skipped',
+      inapp: channels.includes('inapp') ? 'sent' : 'skipped'
+    };
+    notif.deliveryTo = { email: email || null, whatsapp: whatsapp || null };
+    if (channels.includes('email') && email) {
+      console.log(`📧 EMAIL → ${email} — ${opts.title}\n${opts.body}`);
+    }
+    if (channels.includes('whatsapp') && whatsapp) {
+      const waText = encodeURIComponent(`${opts.title}\n\n${opts.body}\n\n— GolfCart Link`);
+      console.log(`💬 WHATSAPP → ${whatsapp} — https://wa.me/${whatsapp.replace(/[^0-9]/g,'')}?text=${waText}`);
+    }
+  });
+  const me = currentAccount();
+  if (me && validRecipients.some(r => r.id === me.id)) {
+    showToast(opts.title, opts.body, opts.severity || 'info');
+  }
+  save();
+  renderNotifBadge();
+  if (document.getElementById('notifPanel').classList.contains('show')) renderNotifPanel();
+}
+function getAdminAndAgentRecipients() {
+  return data.accounts.filter(a => a.active && (a.role === 'ADMIN' || a.role === 'AGENT'));
+}
+function getAdminRecipients() { return data.accounts.filter(a => a.active && a.role === 'ADMIN'); }
+function getCompanyAccount(companyId) {
+  const co = data.companies.find(c => c.id === companyId);
+  if (!co) return null;
+  return data.accounts.find(a => a.id === co.accountId);
+}
+function renderNotifBadge() {
+  const me = currentAccount();
+  if (!me) return;
+  const unread = data.notifications.filter(n => n.accountId === me.id && !n.read).length;
+  const btn = document.getElementById('notifBellBtn');
+  if (!btn) return;
+  const badge = btn.querySelector('.notif-badge');
+  if (unread > 0) {
+    if (badge) badge.textContent = unread > 99 ? '99+' : unread;
+    else {
+      const b = document.createElement('span');
+      b.className = 'notif-badge';
+      b.textContent = unread > 99 ? '99+' : unread;
+      btn.appendChild(b);
+    }
+  } else if (badge) badge.remove();
+}
+function renderNotifPanel() {
+  const me = currentAccount();
+  if (!me) return;
+  const list = document.getElementById('notifList');
+  const mine = data.notifications.filter(n => n.accountId === me.id)
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if (mine.length === 0) {
+    list.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+    return;
+  }
+  list.innerHTML = mine.slice(0, 100).map(n => {
+    const ago = timeAgo(new Date(n.createdAt));
+    const ch = n.deliveryStatus || {};
+    const badges = [];
+    if (ch.inapp === 'sent') badges.push('<span class="ni-badge inapp">App</span>');
+    if (ch.email === 'sent') badges.push('<span class="ni-badge email">Email</span>');
+    if (ch.whatsapp === 'sent') badges.push('<span class="ni-badge whatsapp">WhatsApp</span>');
+    return `
+      <div class="notif-item ${n.read ? 'read' : 'unread'} ${n.severity}"
+           onclick="openNotif('${n.id}')" style="cursor:pointer;">
+        <div class="ni-title">${NOTIF_ICONS[n.type] || '🔔'} ${n.title}</div>
+        <div class="ni-body">${n.body}</div>
+        <div class="ni-time">${badges.join('')} ${ago}</div>
+      </div>
+    `;
+  }).join('');
+}
+function openNotif(id) {
+  const n = data.notifications.find(x => x.id === id);
+  if (n) { n.read = true; save(); renderNotifBadge(); renderNotifPanel(); }
+}
+function markAllRead() {
+  const me = currentAccount();
+  if (!me) return;
+  data.notifications.forEach(n => { if (n.accountId === me.id) n.read = true; });
+  save(); renderNotifBadge(); renderNotifPanel();
+}
+function openNotifPanel() { renderNotifPanel(); document.getElementById('notifPanel').classList.add('show'); }
+function closeNotifPanel() { document.getElementById('notifPanel').classList.remove('show'); }
+function timeAgo(date) {
+  const secs = Math.floor((Date.now() - date) / 1000);
+  if (secs < 60) return 'just now';
+  if (secs < 3600) return `${Math.floor(secs/60)}m ago`;
+  if (secs < 86400) return `${Math.floor(secs/3600)}h ago`;
+  return `${Math.floor(secs/86400)}d ago`;
+}
+function showToast(title, msg, severity = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + severity;
+  const icons = { success: '✅', warn: '⚠️', error: '🚨', info: 'ℹ️' };
+  toast.innerHTML = `
+    <div class="toast-icon">${icons[severity] || 'ℹ️'}</div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      <div class="toast-msg">${msg}</div>
+    </div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.3s, transform 0.3s';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(120%)';
+    setTimeout(() => toast.remove(), 350);
+  }, 5000);
+}
+function saveNotifContacts(role) {
+  const me = currentAccount();
+  if (!me) return;
+  const emailId = role === 'company' ? 'companyNotifEmail' :
+                  role === 'agent' ? 'agentNotifEmail' : 'adminNotifEmail';
+  const phoneId = role === 'company' ? 'companyNotifPhone' :
+                  role === 'agent' ? 'agentNotifPhone' : 'adminNotifPhone';
+  const email = document.getElementById(emailId).value.trim();
+  const phone = document.getElementById(phoneId).value.trim();
+  me.notifEmail = email; me.notifPhone = phone;
+  save();
+  const banner = role === 'company' ? 'companyBanner' : 'adminBanner';
+  showBanner(document.getElementById(banner),
+    `✅ Notification contacts saved${email ? ' · Email' : ''}${phone ? ' · WhatsApp' : ''}.`,
+    'success');
+  renderAll();
+}
+function sendTestNotification(accountId) {
+  const acc = data.accounts.find(a => a.id === accountId);
+  if (!acc) return;
+  notify([acc], {
+    type: 'info',
+    title: '🔔 Test Notification',
+    body: 'This is a test — your notifications are working!',
+    severity: 'info'
+  });
+}
+function notifyAdminsAndAgents(o) { notify(getAdminAndAgentRecipients(), o); }
+function notifyAdminsOnly(o) { notify(getAdminRecipients(), o); }
+function notifyCompany(companyId, o) {
+  const acc = getCompanyAccount(companyId);
+  if (acc) notify([acc], o);
+}
+
+/* ============================================================
+   FINANCE
+   ============================================================ */
+function getCompanyAmountOwed(companyId) {
+  return data.bookings
+    .filter(b => b.companyId === companyId && b.status === 'COMPLETED')
+    .reduce((s, b) => s + (b.commissionAmount || 0), 0);
+}
+function getCompanySubscriptionDue(companyId) {
+  const company = data.companies.find(c => c.id === companyId);
+  if (!company || company.billingModel !== 'SUBSCRIPTION') return 0;
+  return company.rate || 0;
+}
+function getCompanyFinanceInfo(companyId) {
+  const company = data.companies.find(c => c.id === companyId);
+  if (!company) return null;
+  const perBooking = getCompanyAmountOwed(companyId);
+  const subscriptionDue = getCompanySubscriptionDue(companyId);
+  return {
+    company, status: company.paymentStatus || 'pending',
+    perBooking, subscriptionDue,
+    totalOwed: perBooking + subscriptionDue,
+    billingModel: company.billingModel,
+    history: company.paymentHistory || []
+  };
+}
+function getFinanceTotals() {
+  let paid = 0, pending = 0, outstanding = 0;
+  data.companies.forEach(c => {
+    const info = getCompanyFinanceInfo(c.id);
+    if (!info || info.totalOwed === 0) return;
+    if (info.status === 'paid') paid += info.totalOwed;
+    else if (info.status === 'pending') pending += info.totalOwed;
+    else if (info.status === 'outstanding') outstanding += info.totalOwed;
+  });
+  return { paid, pending, outstanding };
+}
+function updatePaymentStatus(companyId, newStatus) {
+  const me = currentAccount();
+  if (!me || (me.role !== 'ADMIN' && me.role !== 'AGENT')) {
+    alert('Only admin or agent can update payment status.'); return;
+  }
+  const company = data.companies.find(c => c.id === companyId);
+  if (!company) return;
+  const oldStatus = company.paymentStatus || 'pending';
+  const amount = getCompanyFinanceInfo(companyId).totalOwed;
+  company.paymentStatus = newStatus;
+  if (!company.paymentHistory) company.paymentHistory = [];
+  company.paymentHistory.unshift({
+    id: uid('pay'), from: oldStatus, to: newStatus,
+    by: me.name, byRole: me.role,
+    at: new Date().toISOString(), amount, note: ''
+  });
+  save(); renderAll();
+  const labels = { paid: '✅ Paid', pending: '🟡 Pending', outstanding: '🔴 Outstanding' };
+  showBanner(document.getElementById(me.role === 'ADMIN' ? 'adminBanner' : 'adminBanner'),
+    `${company.name} → ${labels[newStatus]} · Recorded by ${me.name}`, 'success');
+  notifyAdminsOnly({
+    type: 'payment_update',
+    title: `💰 Payment status changed — ${company.name}`,
+    body: `${me.name} (${me.role}) changed ${company.name}'s payment status from ${labels[oldStatus] || oldStatus} to ${labels[newStatus]}. Amount: $${amount.toFixed(2)}.`,
+    severity: newStatus === 'paid' ? 'success' : newStatus === 'outstanding' ? 'error' : 'warn',
+    channels: ['inapp', 'email']
+  });
+}
+function openPaymentHistory(companyId) {
+  const company = data.companies.find(c => c.id === companyId);
+  const history = company.paymentHistory || [];
+  if (history.length === 0) { alert('No payment history yet for ' + company.name); return; }
+  const lines = history.map(h => {
+    const date = new Date(h.at).toLocaleString();
+    return `• ${date}: ${h.from || '—'} → ${h.to} by ${h.by} (${h.byRole})\n  Amount: $${(h.amount||0).toFixed(2)}`;
+  }).join('\n\n');
+  alert(`Payment history — ${company.name}\n\n${lines}`);
+}
+function renderFinanceDashboard(summaryId, listId) {
+  const summaryEl = document.getElementById(summaryId);
+  const listEl = document.getElementById(listId);
+  if (!summaryEl || !listEl) return;
+  const totals = getFinanceTotals();
+  summaryEl.innerHTML = `
+    <div class="finance-card paid">
+      <div class="fc-amount">$${totals.paid.toFixed(2)}</div>
+      <div class="fc-label">Collected (Paid)</div>
+    </div>
+    <div class="finance-card pending">
+      <div class="fc-amount">$${totals.pending.toFixed(2)}</div>
+      <div class="fc-label">Pending</div>
+    </div>
+    <div class="finance-card outstanding">
+      <div class="fc-amount">$${totals.outstanding.toFixed(2)}</div>
+      <div class="fc-label">Outstanding</div>
+    </div>
+  `;
+  if (data.companies.length === 0) {
+    listEl.innerHTML = '<div class="empty">No companies yet.</div>';
+    return;
+  }
+  const order = { outstanding: 0, pending: 1, paid: 2 };
+  const sorted = data.companies.slice().sort((a, b) => {
+    const sa = order[a.paymentStatus || 'pending'] ?? 1;
+    const sb = order[b.paymentStatus || 'pending'] ?? 1;
+    if (sa !== sb) return sa - sb;
+    return getCompanyFinanceInfo(b.id).totalOwed - getCompanyFinanceInfo(a.id).totalOwed;
+  });
+  listEl.innerHTML = sorted.map(c => {
+    const info = getCompanyFinanceInfo(c.id);
+    const st = info.status;
+    let amountLabel = '';
+    if (c.billingModel === 'SUBSCRIPTION') {
+      amountLabel = info.subscriptionDue > 0 ? `$${info.subscriptionDue.toFixed(2)} / month` : 'No subscription set';
+    } else if (c.billingModel === 'COMMISSION') {
+      amountLabel = `$${info.perBooking.toFixed(2)} commission on completed bookings`;
+    } else {
+      amountLabel = `$${info.perBooking.toFixed(2)} per-rental fees`;
+    }
+    const amountColor = st === 'paid' ? 'paid' : st === 'outstanding' ? 'outstanding' : 'pending';
+    const statusLabel = st === 'paid' ? '✅ Paid' : st === 'outstanding' ? '🔴 Outstanding' : '🟡 Pending';
+    const statusBadgeClass = st === 'paid' ? 'paid' : st === 'outstanding' ? 'outstanding' : 'pay-pending';
+    const lastChange = (c.paymentHistory || [])[0];
+    const lastLine = lastChange
+      ? `Last updated ${timeAgo(new Date(lastChange.at))} by <strong>${lastChange.by}</strong>`
+      : 'No payment history yet';
+    return `
+      <div class="company-finance-row ${st}">
+        <div class="cfr-left">
+          <div class="cfr-name">
+            ${c.name}
+            <span class="badge ${statusBadgeClass}">${statusLabel}</span>
+            ${c.fleetTotal ? `<span class="badge fleet">🚌 ${c.fleetTotal}</span>` : ''}
+          </div>
+          <div class="cfr-meta">${amountLabel} · ${lastLine}</div>
+        </div>
+        <div class="cfr-amount ${amountColor}">$${info.totalOwed.toFixed(2)}</div>
+        <div class="cfr-actions">
+          ${st !== 'paid' ? `<button class="btn small success" onclick="updatePaymentStatus('${c.id}','paid')">✓ Mark Paid</button>` : ''}
+          ${st !== 'pending' ? `<button class="btn small warn" onclick="updatePaymentStatus('${c.id}','pending')">⏳ Mark Pending</button>` : ''}
+          ${st !== 'outstanding' ? `<button class="btn small danger" onclick="updatePaymentStatus('${c.id}','outstanding')">⚠ Mark Outstanding</button>` : ''}
+          ${(c.paymentHistory && c.paymentHistory.length > 0) ? `<button class="btn small secondary" onclick="openPaymentHistory('${c.id}')">📜 History</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   BIOMETRIC LOGIN
+   ============================================================ */
+function loadBio() {
+  try { return JSON.parse(localStorage.getItem(WEBAUTHN_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveBio(obj) { localStorage.setItem(WEBAUTHN_KEY, JSON.stringify(obj)); }
+async function isBiometricAvailable() {
+  if (!window.PublicKeyCredential) return false;
+  try { return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(); }
+  catch { return false; }
+}
+function bioLabel() {
+  const ua = navigator.userAgent;
+  if (/Mac|iPhone|iPad/.test(ua)) return 'Face ID / Touch ID';
+  if (/Android/.test(ua)) return 'Fingerprint';
+  if (/Windows/.test(ua)) return 'Windows Hello';
+  return 'Biometric';
+}
+async function updateBiometricLoginUI(mode) {
+  const section = document.getElementById('bioLoginSection');
+  const bio = loadBio();
+  const enabledAccounts = (bio.enabled || []).filter(a => {
+    const acc = data.accounts.find(x => x.id === a.accountId && x.active);
+    return acc && acc.role === mode;
+  });
+  if (enabledAccounts.length === 0) { section.style.display = 'none'; return; }
+  const available = await isBiometricAvailable();
+  if (!available && !enabledAccounts.some(a => a.deviceFallback)) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  document.getElementById('bioLoginLabel').textContent = `Sign in with ${bioLabel()}`;
+}
+async function attemptBiometricLogin() {
+  const bio = loadBio();
+  const enabledAccounts = (bio.enabled || []).filter(a => {
+    const acc = data.accounts.find(x => x.id === a.accountId && x.active);
+    return acc && acc.role === loginMode;
+  });
+  if (enabledAccounts.length === 0) { alert('No biometric login is set up for this role yet.'); return; }
+  let candidate = enabledAccounts[0];
+  const available = await isBiometricAvailable();
+  if (available) {
+    try {
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+      await navigator.credentials.get({
+        publicKey: { challenge, timeout: 60000, userVerification: 'required',
+          rpId: location.hostname || 'localhost', allowCredentials: [] }
+      });
+    } catch (err) {
+      document.getElementById('loginError').textContent = 'Biometric sign-in cancelled or failed. Try your password.';
+      document.getElementById('loginError').classList.add('show');
+      return;
+    }
+  } else if (candidate.deviceFallback) {
+    if (!confirm('Sign in to this trusted device without a password?')) return;
+  } else { alert('Biometrics are not available on this device.'); return; }
+  data.session.accountId = candidate.accountId;
+  save(); closeLogin(); renderAll();
+}
+async function promptEnableBiometric(accountId) {
+  window._bioAccountPendingId = accountId;
+  document.getElementById('bioPromptOverlay').classList.add('show');
+}
+async function acceptBiometric() {
+  const accountId = window._bioAccountPendingId;
+  if (!accountId) { document.getElementById('bioPromptOverlay').classList.remove('show'); return; }
+  const acc = data.accounts.find(a => a.id === accountId);
+  if (!acc) { document.getElementById('bioPromptOverlay').classList.remove('show'); return; }
+  const available = await isBiometricAvailable();
+  let registered = false;
+  if (available) {
+    try {
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+      const userId = new Uint8Array(16);
+      crypto.getRandomValues(userId);
+      const cred = await navigator.credentials.create({
+        publicKey: {
+          challenge,
+          rp: { name: 'GolfCart Link', id: location.hostname || 'localhost' },
+          user: { id: userId, name: acc.email, displayName: acc.name },
+          pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+          authenticatorSelection: { authenticatorAttachment: 'platform',
+            userVerification: 'required', residentKey: 'preferred' },
+          timeout: 60000, attestation: 'none'
+        }
+      });
+      if (cred) registered = true;
+    } catch (err) { console.warn('Biometric setup failed', err); }
+  }
+  const bio = loadBio();
+  bio.enabled = bio.enabled || [];
+  bio.enabled = bio.enabled.filter(a => a.accountId !== accountId);
+  bio.enabled.push({ accountId, registered, deviceFallback: !registered, createdAt: new Date().toISOString() });
+  saveBio(bio);
+  document.getElementById('bioPromptOverlay').classList.remove('show');
+  renderAll();
+  const banner = document.getElementById(
+    acc.role === 'ADMIN' ? 'adminBanner' :
+    acc.role === 'COMPANY' ? 'companyBanner' : 'adminBanner'
+  );
+  if (banner) showBanner(banner, registered
+    ? `✅ ${bioLabel()} enabled. Next sign-in, just tap the button.`
+    : `✅ Quick sign-in enabled for this device.`, 'success');
+}
+function declineBiometric() { document.getElementById('bioPromptOverlay').classList.remove('show'); }
+function disableBiometric(accountId) {
+  if (!confirm('Turn off quick sign-in for this account on this device?')) return;
+  const bio = loadBio();
+  bio.enabled = (bio.enabled || []).filter(a => a.accountId !== accountId);
+  saveBio(bio); renderAll();
+}
+
+/* ============================================================
+   AUTO-CLEAR
+   ============================================================ */
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function isBookingAutoCleared(booking) {
+  if (!booking) return false;
+  if (booking.contactClearedAt) return true;
+  if (!booking.endDate) return false;
+  return todayStr() >= booking.endDate;
+}
+function findBookingForMatch(matchId) {
+  const match = data.matches.find(m => m.id === matchId);
+  if (!match) return null;
+  return data.bookings.find(b => b.requestId === match.requestId && b.companyId === match.companyId);
+}
+function runAutoClearSweep() {
+  let changed = false;
+  const today = todayStr();
+  data.bookings.forEach(b => {
+    if (!b.contactClearedAt && b.endDate && today >= b.endDate) {
+      b.contactClearedAt = new Date().toISOString();
+      b.clearedReason = 'auto-end-date';
+      changed = true;
+      const req = data.requests.find(r => r.id === b.requestId);
+      if (req && req.status !== 'COMPLETED' && req.status !== 'CANCELLED') req.status = 'COMPLETED';
+      const co = data.companies.find(c => c.id === b.companyId);
+      if (co && b.cartId) {
+        const cart = co.carts.find(c => c.id === b.cartId);
+        if (cart && cart.status === 'RENTED') cart.status = 'AVAILABLE';
+      }
+      if (b.status === 'PENDING' || b.status === 'ACTIVE') b.status = 'COMPLETED';
+    }
+  });
+  if (changed) save();
+}
+window.manuallyClearBooking = function(bookingId) {
+  const acc = currentAccount();
+  if (!acc || (acc.role !== 'ADMIN' && acc.role !== 'AGENT')) { alert('Only admin or agent can clear.'); return; }
+  const booking = data.bookings.find(b => b.id === bookingId);
+  if (!booking) return;
+  if (booking.contactClearedAt) { alert('Already cleared.'); return; }
+  const req = data.requests.find(r => r.id === booking.requestId);
+  const co = data.companies.find(c => c.id === booking.companyId);
+  const who = req ? req.customer.name : 'this customer';
+  const where = co ? co.name : 'this company';
+  if (!confirm(`Remove ${who}'s contact info from ${where}'s portal now?`)) return;
+  booking.contactClearedAt = new Date().toISOString();
+  booking.clearedReason = 'manual-' + acc.role.toLowerCase();
+  booking.clearedBy = acc.name;
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'), `✅ Cleared from ${where}'s portal by ${acc.name}.`, 'success');
+};
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+function renderHeader() {
+  const acc = currentAccount();
+  const right = document.getElementById('headerRight');
+  if (!acc) {
+    right.innerHTML = `
+      <div class="login-icons">
+        <button class="login-icon-btn company-door" title="Company Sign In" onclick="openLogin('COMPANY')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01"/>
+          </svg>
+        </button>
+        <button class="login-icon-btn agent-shield" title="Agent Sign In" onclick="openLogin('AGENT')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/>
+          </svg>
+        </button>
+        <button class="login-icon-btn admin-key" title="Admin Sign In" onclick="openLogin('ADMIN')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4M18 5l2 2M15 8l2 2"/>
+          </svg>
+        </button>
+      </div>
+    `;
+  } else {
+    right.innerHTML = `
+      <button class="notif-btn" id="notifBellBtn" title="Notifications" onclick="openNotifPanel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+      <div class="user-chip">
+        <span class="role-tag">${acc.role}</span>
+        ${acc.name}
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    `;
+    renderNotifBadge();
+  }
+}
+
+/* ============================================================
+   SETUP / LOGIN
+   ============================================================ */
+function openSetup() {
+  document.getElementById('setupName').value = '';
+  document.getElementById('setupEmail').value = '';
+  document.getElementById('setupPassword').value = '';
+  document.getElementById('setupPassword2').value = '';
+  document.getElementById('setupError').classList.remove('show');
+  document.getElementById('setupOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('setupName').focus(), 50);
+}
+function closeSetup() { document.getElementById('setupOverlay').classList.remove('show'); }
+function saveSetup() {
+  const err = document.getElementById('setupError');
+  const name = document.getElementById('setupName').value.trim();
+  const email = document.getElementById('setupEmail').value.trim().toLowerCase();
+  const p1 = document.getElementById('setupPassword').value;
+  const p2 = document.getElementById('setupPassword2').value;
+  if (!name || !email) { err.textContent = 'Name and email are required.'; err.classList.add('show'); return; }
+  if (p1.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.classList.add('show'); return; }
+  if (p1 !== p2) { err.textContent = 'Passwords do not match.'; err.classList.add('show'); return; }
+  const admin = {
+    id: uid('acc'), role: 'ADMIN', name, email, password: p1,
+    notifEmail: email, notifPhone: '',
+    active: true, createdAt: new Date().toISOString()
+  };
+  data.accounts.push(admin);
+  data.initialized = true;
+  data.session.accountId = admin.id;
+  save(); closeSetup(); renderAll();
+  promptEnableBiometric(admin.id);
+}
+
+let loginMode = 'ADMIN';
+function openLogin(mode) {
+  loginMode = mode;
+  if (mode === 'ADMIN' && !data.initialized) { openSetup(); return; }
+  const titles = {
+    ADMIN:   { t: 'Admin Sign In', s: 'Full access to accounts, billing, and requests.' },
+    COMPANY: { t: 'Company Sign In', s: 'Rental company portal — manage inventory and leads.' },
+    AGENT:   { t: 'Agent Sign In', s: 'Staff access — view only.' }
+  };
+  document.getElementById('loginTitle').textContent = titles[mode].t;
+  document.getElementById('loginSubtitle').textContent = titles[mode].s;
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('loginOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('loginEmail').focus(), 50);
+  updateBiometricLoginUI(mode);
+}
+function closeLogin() { document.getElementById('loginOverlay').classList.remove('show'); }
+async function attemptLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('loginPassword').value;
+  const err   = document.getElementById('loginError');
+  const acc = data.accounts.find(a => a.email.toLowerCase() === email && a.password === pass);
+  if (!acc) { err.textContent = 'Invalid email or password.'; err.classList.add('show'); return; }
+  if (!acc.active) { err.textContent = 'This account has been suspended. Contact the administrator.'; err.classList.add('show'); return; }
+  if (loginMode === 'COMPANY' && acc.role !== 'COMPANY') { err.textContent = 'This is not a company account.'; err.classList.add('show'); return; }
+  if (loginMode === 'ADMIN' && acc.role !== 'ADMIN') { err.textContent = 'This is not an admin account.'; err.classList.add('show'); return; }
+  if (loginMode === 'AGENT' && acc.role !== 'AGENT' && acc.role !== 'ADMIN') { err.textContent = 'This is not an agent account.'; err.classList.add('show'); return; }
+  data.session.accountId = acc.id;
+  save(); closeLogin(); renderAll();
+  const bio = loadBio();
+  const already = (bio.enabled || []).some(a => a.accountId === acc.id);
+  if (!already && acc.role !== 'ADMIN') setTimeout(() => promptEnableBiometric(acc.id), 600);
+}
+function doLogout() {
+  data.session.accountId = null;
+  save(); renderAll();
+}
+
+/* ============================================================
+   ACCOUNT MANAGER
+   ============================================================ */
+let editingAccountId = null;
+let creatingRole = 'COMPANY';
+
+function openCreateAccountModal(role) {
+  editingAccountId = null;
+  creatingRole = role;
+  document.getElementById('accountModalTitle').textContent =
+    role === 'COMPANY' ? 'Create Company Account' : 'Create Agent Account';
+  document.getElementById('accountModalSubtitle').textContent =
+    role === 'COMPANY' ? 'Creates a login + company profile.' : 'Creates a read-only staff login.';
+  document.getElementById('acctName').value = '';
+  document.getElementById('acctEmail').value = '';
+  document.getElementById('acctPassword').value = '';
+  document.getElementById('acctNotifEmail').value = '';
+  document.getElementById('acctNotifPhone').value = '';
+  document.getElementById('acctCity').value = '';
+  document.getElementById('acctWebsite').value = '';
+  document.getElementById('acctFleetTotal').value = '';
+  document.getElementById('acctBilling').value = 'COMMISSION';
+  document.getElementById('acctRate').value = '0.20';
+  document.getElementById('acctCompanyFields').style.display = role === 'COMPANY' ? 'block' : 'none';
+  document.getElementById('accountError').classList.remove('show');
+  updateBillingRateLabel();
+  document.getElementById('accountOverlay').classList.add('show');
+}
+function openEditAccountModal(accountId) {
+  editingAccountId = accountId;
+  const acc = data.accounts.find(a => a.id === accountId);
+  if (!acc) return;
+  document.getElementById('accountModalTitle').textContent = 'Edit Account';
+  document.getElementById('accountModalSubtitle').textContent = `Editing ${acc.name} (${acc.role})`;
+  document.getElementById('acctName').value = acc.name;
+  document.getElementById('acctEmail').value = acc.email;
+  document.getElementById('acctPassword').value = acc.password;
+  document.getElementById('acctNotifEmail').value = acc.notifEmail || '';
+  document.getElementById('acctNotifPhone').value = acc.notifPhone || '';
+  if (acc.role === 'COMPANY') {
+    const co = data.companies.find(c => c.accountId === acc.id);
+    document.getElementById('acctCity').value = co ? co.city : '';
+    document.getElementById('acctWebsite').value = co ? (co.website || '') : '';
+    document.getElementById('acctFleetTotal').value = co ? (co.fleetTotal || 0) : 0;
+    document.getElementById('acctBilling').value = co ? co.billingModel : 'COMMISSION';
+    document.getElementById('acctRate').value = co ? co.rate : 0.20;
+    document.getElementById('acctCompanyFields').style.display = 'block';
+    creatingRole = 'COMPANY';
+  } else {
+    document.getElementById('acctCompanyFields').style.display = 'none';
+    creatingRole = acc.role;
+  }
+  document.getElementById('accountError').classList.remove('show');
+  updateBillingRateLabel();
+  document.getElementById('accountOverlay').classList.add('show');
+}
+function closeAccountModal() { document.getElementById('accountOverlay').classList.remove('show'); }
+function updateBillingRateLabel() {
+  const model = document.getElementById('acctBilling').value;
+  const lbl = document.getElementById('acctRateLabel');
+  const inp = document.getElementById('acctRate');
+  if (model === 'COMMISSION') { lbl.textContent = 'Commission Rate (0.20 = 20%)'; inp.step = '0.01'; }
+  else if (model === 'SUBSCRIPTION') { lbl.textContent = 'Monthly Fee ($)'; inp.step = '1'; }
+  else { lbl.textContent = 'Fee per Rental ($)'; inp.step = '1'; }
+}
+function saveAccount() {
+  const err = document.getElementById('accountError');
+  const name = document.getElementById('acctName').value.trim();
+  const email = document.getElementById('acctEmail').value.trim().toLowerCase();
+  const password = document.getElementById('acctPassword').value;
+  const notifEmail = document.getElementById('acctNotifEmail').value.trim();
+  const notifPhone = document.getElementById('acctNotifPhone').value.trim();
+  const fleetTotal = parseInt(document.getElementById('acctFleetTotal').value, 10) || 0;
+  const website = document.getElementById('acctWebsite').value.trim();
+  if (!name || !email || !password) { err.textContent = 'Name, email, and password are required.'; err.classList.add('show'); return; }
+  if (password.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.classList.add('show'); return; }
+  const duplicate = data.accounts.find(a => a.email.toLowerCase() === email && a.id !== editingAccountId);
+  if (duplicate) { err.textContent = 'Another account already uses that email.'; err.classList.add('show'); return; }
+
+  if (editingAccountId) {
+    const acc = data.accounts.find(a => a.id === editingAccountId);
+    acc.name = name; acc.email = email; acc.password = password;
+    acc.notifEmail = notifEmail; acc.notifPhone = notifPhone;
+    if (acc.role === 'COMPANY') {
+      const co = data.companies.find(c => c.accountId === acc.id);
+      if (co) {
+        co.name = name;
+        co.city = document.getElementById('acctCity').value.trim();
+        co.website = website;
+        co.fleetTotal = fleetTotal;
+        co.billingModel = document.getElementById('acctBilling').value;
+        co.rate = parseFloat(document.getElementById('acctRate').value) || 0;
+      }
+    }
+    showBanner(document.getElementById('adminBanner'), 'Account updated.', 'success');
+  } else {
+    const newId = uid('acc');
+    data.accounts.push({
+      id: newId, role: creatingRole, name, email, password,
+      notifEmail, notifPhone, active: true, createdAt: new Date().toISOString()
+    });
+    if (creatingRole === 'COMPANY') {
+      data.companies.push({
+        id: uid('co'), accountId: newId, name,
+        city: document.getElementById('acctCity').value.trim(),
+        website, fleetTotal,
+        billingModel: document.getElementById('acctBilling').value,
+        rate: parseFloat(document.getElementById('acctRate').value) || 0,
+        active: true, carts: [],
+        paymentStatus: 'pending', paymentHistory: []
+      });
+    }
+    showBanner(document.getElementById('adminBanner'), 'Account created.', 'success');
+  }
+  save(); closeAccountModal(); renderAll();
+}
+window.toggleAccountActive = function(accountId) {
+  const acc = data.accounts.find(a => a.id === accountId);
+  if (!acc || acc.role === 'ADMIN') return;
+  acc.active = !acc.active;
+  if (acc.role === 'COMPANY') {
+    const co = data.companies.find(c => c.accountId === acc.id);
+    if (co) co.active = acc.active;
+  }
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'),
+    acc.active ? 'Account re-activated.' : 'Account suspended — user can no longer log in.',
+    acc.active ? 'success' : 'info');
+};
+window.deleteAccount = function(accountId) {
+  const acc = data.accounts.find(a => a.id === accountId);
+  if (!acc || acc.role === 'ADMIN') return alert('Cannot delete admin.');
+  if (!confirm(`Delete "${acc.name}"?`)) return;
+  data.accounts = data.accounts.filter(a => a.id !== accountId);
+  if (acc.role === 'COMPANY') data.companies = data.companies.filter(c => c.accountId !== accountId);
+  const bio = loadBio();
+  bio.enabled = (bio.enabled || []).filter(a => a.accountId !== accountId);
+  saveBio(bio);
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'), 'Account deleted.', 'info');
+};
+let resettingAccountId = null;
+window.openResetPasswordModal = function(accountId) {
+  resettingAccountId = accountId;
+  const acc = data.accounts.find(a => a.id === accountId);
+  document.getElementById('resetSubtitle').textContent = `Set a new password for ${acc.name}.`;
+  document.getElementById('resetPassword').value = '';
+  document.getElementById('resetPassword2').value = '';
+  document.getElementById('resetError').classList.remove('show');
+  document.getElementById('resetOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('resetPassword').focus(), 50);
+};
+function closeResetModal() { document.getElementById('resetOverlay').classList.remove('show'); }
+function saveResetPassword() {
+  const err = document.getElementById('resetError');
+  const p1 = document.getElementById('resetPassword').value;
+  const p2 = document.getElementById('resetPassword2').value;
+  if (p1.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.classList.add('show'); return; }
+  if (p1 !== p2) { err.textContent = 'Passwords do not match.'; err.classList.add('show'); return; }
+  const acc = data.accounts.find(a => a.id === resettingAccountId);
+  if (!acc) return;
+  acc.password = p1;
+  save(); closeResetModal();
+  showBanner(document.getElementById('adminBanner'), `Password reset for ${acc.name}.`, 'success');
+}
+function renderAccountList() {
+  const el = document.getElementById('accountList');
+  if (data.accounts.length === 0) { el.innerHTML = '<div class="empty">No accounts yet.</div>'; return; }
+  const bio = loadBio();
+  const list = data.accounts.slice().sort((a,b) => {
+    const order = { ADMIN: 0, AGENT: 1, COMPANY: 2 };
+    return order[a.role] - order[b.role];
+  });
+  el.innerHTML = list.map(a => {
+    const isAdmin = a.role === 'ADMIN';
+    const isMe = a.id === data.session.accountId;
+    const hasBio = (bio.enabled || []).some(x => x.accountId === a.id);
+    const co = a.role === 'COMPANY' ? data.companies.find(c => c.accountId === a.id) : null;
+    const emailSet = a.notifEmail || a.email;
+    const phoneSet = a.notifPhone;
+    return `
+      <div class="acct-row">
+        <div class="who">
+          <strong>${a.name}${isMe ? ' <span class="muted">(you)</span>' : ''}</strong>
+          <small>${a.email}${co && co.fleetTotal ? ` · ${co.fleetTotal} carts owned` : ''}</small>
+          <div class="contact-info-row">
+            <span class="ci-item ${emailSet ? 'set' : 'missing'}">📧 ${emailSet || 'no email'}</span>
+            <span class="ci-item ${phoneSet ? 'set' : 'missing'}">💬 ${phoneSet || 'no WhatsApp'}</span>
+          </div>
+        </div>
+        <span class="role-pill ${a.role}">${a.role}</span>
+        <span class="badge ${a.active ? 'available' : 'suspended'}">${a.active ? 'Active' : 'Suspended'}</span>
+        ${hasBio ? `<span class="badge hot" title="Quick sign-in enabled">🔐 Quick Sign-In</span>` : ''}
+        <div class="item-actions" style="margin:0;">
+          <button class="btn small secondary" onclick="openEditAccountModal('${a.id}')">Edit</button>
+          <button class="btn small info" onclick="openResetPasswordModal('${a.id}')">Reset Password</button>
+          <button class="btn small wa" onclick="sendTestNotification('${a.id}')">Send Test</button>
+          ${hasBio ? `<button class="btn small warning" style="background:#f59e0b;color:white;" onclick="disableBiometric('${a.id}')">Disable Quick Sign-In</button>` : ''}
+          ${!isAdmin ? `<button class="btn small ${a.active ? 'danger' : 'success'}" onclick="toggleAccountActive('${a.id}')">
+            ${a.active ? 'Suspend' : 'Reactivate'}
+          </button>` : ''}
+          ${!isAdmin && !isMe ? `<button class="btn small danger" onclick="deleteAccount('${a.id}')">Delete</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   CUSTOMER FLOW
+   ============================================================ */
+document.getElementById('requestForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const banner = document.getElementById('customerBanner');
+  const start = document.getElementById('custStart').value;
+  const end = document.getElementById('custEnd').value;
+  if (end < start) return showBanner(banner, 'End date must be after start date.', 'error');
+  const sessionId = getCustomerSessionId();
+  const customer = {
+    id: uid('cust'),
+    name: document.getElementById('custName').value.trim(),
+    email: document.getElementById('custEmail').value.trim(),
+    phone: document.getElementById('custPhone').value.trim()
+  };
+  const request = {
+    id: uid('req'),
+    customerId: customer.id,
+    customerOwnerId: sessionId,
+    customer,
+    seatCount: parseInt(document.getElementById('custSeats').value, 10),
+    startDate: start, endDate: end,
+    notes: document.getElementById('custNotes').value.trim(),
+    status: 'NEW', createdAt: new Date().toISOString()
+  };
+  data.requests.push(request);
+  save();
+  e.target.reset();
+  document.getElementById('custStart').value = start;
+  document.getElementById('custEnd').value = end;
+  showBanner(banner, 'Request submitted! We\'ll match you with a provider shortly.', 'success');
+  notifyAdminsAndAgents({
+    type: 'new_request',
+    title: `📥 New Request: ${request.seatCount}-Seater`,
+    body: `${customer.name} requested a ${request.seatCount}-seater from ${fmtDate(start)} to ${fmtDate(end)} (${daysBetween(start, end)} days).`,
+    severity: 'warn',
+    channels: ['inapp', 'email', 'whatsapp']
+  });
+  renderAll();
+});
+
+/* Activity chips */
+function toggleActivity(el) {
+  el.classList.toggle('selected');
+}
+
+function submitActivityRequest() {
+  const sessionId = getCustomerSessionId();
+  const selectedChips = Array.from(document.querySelectorAll('.activity-chip.selected'))
+    .map(c => c.dataset.activity);
+  const custom = document.getElementById('customActivity').value.trim();
+  const message = document.getElementById('activityMessage').value.trim();
+  const combinedActivities = [...selectedChips];
+  if (custom) combinedActivities.push(custom);
+
+  const banner = document.getElementById('customerBanner');
+  if (combinedActivities.length === 0 && !message) {
+    return showBanner(banner, 'Please pick at least one activity or tell us what you\'d like.', 'error');
+  }
+
+  // Try to link to the customer's most recent request for contact info
+  const myReqs = data.requests
+    .filter(r => r.customerOwnerId === sessionId)
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const myMostRecent = myReqs[0];
+
+  const concierge = {
+    id: uid('con'),
+    customerOwnerId: sessionId,
+    customer: myMostRecent ? myMostRecent.customer : null,
+    activities: combinedActivities,
+    customActivity: custom,
+    message,
+    status: 'Noted',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    updatedBy: null
+  };
+  data.conciergeRequests.push(concierge);
+  save();
+
+  // Reset form
+  document.querySelectorAll('.activity-chip.selected').forEach(c => c.classList.remove('selected'));
+  document.getElementById('customActivity').value = '';
+  document.getElementById('activityMessage').value = '';
+
+  showBanner(banner, '✅ Activity request sent! We\'ll reach out with options soon.', 'success');
+
+  notifyAdminsAndAgents({
+    type: 'concierge_request',
+    title: `🎉 Activity Request: ${combinedActivities.join(', ') || '(no activities specified)'}`,
+    body: `${myMostRecent ? myMostRecent.customer.name : 'A visitor'} requested help with: ${combinedActivities.join(', ') || 'custom request'}. ${message ? '\n\nMessage: ' + message : ''}`,
+    severity: 'success',
+    channels: ['inapp', 'email', 'whatsapp']
+  });
+
+  renderAll();
+}
+
+/* Customer requests view */
+function renderCustomerRequests() {
+  const el = document.getElementById('customerRequests');
+  const sessionId = getCustomerSessionId();
+  const myReqs = data.requests
+    .filter(r => r.customerOwnerId === sessionId)
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  if (myReqs.length === 0) {
+    el.innerHTML = `
+      <div class="empty-state-illustration">
+        <div class="esi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <div class="esi-title">No requests yet</div>
+        <div class="esi-desc">Your golf cart requests will appear here once you submit them.</div>
+      </div>
+    `;
+    return;
+  }
+
+  el.innerHTML = myReqs.map(r => {
+    const accepted = data.matches.find(m => m.requestId === r.id && m.response === 'ACCEPTED');
+    const co = accepted ? data.companies.find(c => c.id === accepted.companyId) : null;
+    const contactReleased = r.status === 'SENT_TO_COMPANY' && r.assignedCompanyId === co?.id;
+    const booking = data.bookings.find(b => b.requestId === r.id);
+    const cleared = booking && isBookingAutoCleared(booking);
+
+    // Provider contact box shown to customer once released
+    let providerBox = '';
+    if (co && ['SENT_TO_COMPANY','CONFIRMED','COMPLETED'].includes(r.status) && !cleared) {
+      const coAccount = data.accounts.find(a => a.id === co.accountId);
+      const coEmail = coAccount ? coAccount.email : '';
+      const coPhone = coAccount ? (coAccount.notifPhone || '') : '';
+      const coWebsite = co.website || '';
+      providerBox = `
+        <div class="customer-provider-box">
+          <div class="cpb-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Your Provider
+          </div>
+          <div class="cpb-name">${co.name}${co.city ? ' · ' + co.city : ''}</div>
+          ${coEmail ? `<div class="cpb-row"><span class="k">Email:</span><span class="v"><a href="mailto:${coEmail}">${coEmail}</a></span></div>` : ''}
+          ${coPhone ? `<div class="cpb-row"><span class="k">Phone:</span><span class="v"><a href="tel:${coPhone}">${coPhone}</a></span></div>` : ''}
+          ${coWebsite ? `<div class="cpb-row"><span class="k">Website:</span><span class="v"><a href="${coWebsite}" target="_blank" rel="noopener">${coWebsite}</a></span></div>` : ''}
+          <div class="cpb-cta">Reach out to confirm your booking details directly with them.</div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">${r.seatCount}-Seater · ${fmtDate(r.startDate)} → ${fmtDate(r.endDate)}</div>
+            <div class="item-meta">Requested ${new Date(r.createdAt).toLocaleString()}</div>
+          </div>
+          <span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+        </div>
+        ${providerBox}
+        ${r.status === 'NEW' ? `<div class="muted" style="margin-top:0.5rem; font-size:0.8rem;">⏳ Matching you with a provider...</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+/* Customer activities view */
+function renderCustomerActivities() {
+  const el = document.getElementById('customerActivities');
+  if (!el) return;
+  const sessionId = getCustomerSessionId();
+  const myActivities = (data.conciergeRequests || [])
+    .filter(cr => cr.customerOwnerId === sessionId)
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  if (myActivities.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+
+  const statusBadges = {
+    'Noted': { cls: 'con-noted', label: 'Noted' },
+    'In Progress': { cls: 'con-progress', label: 'In Progress' },
+    'Booked': { cls: 'con-booked', label: 'Booked' },
+    'Declined': { cls: 'con-declined', label: 'Declined' }
+  };
+
+  el.innerHTML = `
+    <div class="divider"></div>
+    <h3 style="font-size:0.95rem; margin-bottom:0.65rem; color:var(--primary-dark);">🎉 Your Activity Requests</h3>
+    ${myActivities.map(cr => {
+      const sb = statusBadges[cr.status] || statusBadges['Noted'];
+      return `
+        <div class="item" style="border-left:3px solid #7c3aed;">
+          <div class="item-header">
+            <div>
+              <div class="item-title">${cr.activities.join(', ') || 'Custom request'}</div>
+              <div class="item-meta">Sent ${new Date(cr.createdAt).toLocaleString()}</div>
+            </div>
+            <span class="badge ${sb.cls}">${sb.label}</span>
+          </div>
+          ${cr.message ? `<div class="muted" style="margin-top:0.3rem;">"${cr.message}"</div>` : ''}
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+/* ============================================================
+   COMPANY VIEW
+   ============================================================ */
+function saveFleetTotal() {
+  const acc = currentAccount();
+  if (!acc || acc.role !== 'COMPANY') return;
+  const company = data.companies.find(c => c.accountId === acc.id);
+  if (!company) return;
+  const val = parseInt(document.getElementById('fleetTotalInput').value, 10) || 0;
+  company.fleetTotal = val;
+  save();
+  showBanner(document.getElementById('companyBanner'), `✅ Fleet size updated to ${val} carts.`, 'success');
+  renderAll();
+}
+
+function renderCompanyView() {
+  const acc = currentAccount();
+  if (!acc || acc.role !== 'COMPANY') return;
+  const company = data.companies.find(c => c.accountId === acc.id);
+  if (!company) return;
+
+  document.getElementById('companyNameHeading').textContent = company.name + ' Dashboard';
+
+  const fleetInput = document.getElementById('fleetTotalInput');
+  if (fleetInput) fleetInput.value = company.fleetTotal || 0;
+  const notifEmailInput = document.getElementById('companyNotifEmail');
+  const notifPhoneInput = document.getElementById('companyNotifPhone');
+  if (notifEmailInput) notifEmailInput.value = acc.notifEmail || '';
+  if (notifPhoneInput) notifPhoneInput.value = acc.notifPhone || '';
+
+  const total = company.carts.length;
+  const avail = company.carts.filter(c => c.status === 'AVAILABLE').length;
+  const rented = company.carts.filter(c => c.status === 'RENTED').length;
+  document.getElementById('companyStats').innerHTML = `
+    <div class="stat"><div class="num">${company.fleetTotal || 0}</div><div class="lbl">Fleet Owned</div></div>
+    <div class="stat"><div class="num">${total}</div><div class="lbl">Listed on Platform</div></div>
+    <div class="stat"><div class="num" style="color:var(--success);">${avail}</div><div class="lbl">Available</div></div>
+    <div class="stat"><div class="num" style="color:var(--info);">${rented}</div><div class="lbl">Rented</div></div>
+  `;
+
+  const inv = document.getElementById('companyInventory');
+  if (company.carts.length === 0) {
+    inv.innerHTML = '<div class="empty">No carts yet. Click "Add Cart" above to build your fleet.</div>';
+  } else {
+    inv.innerHTML = company.carts.map(cart => `
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">${cart.label} · ${cart.seatCount}-Seater</div>
+          <span class="badge ${cart.status.toLowerCase()}">${cart.status}</span>
+        </div>
+        <div class="item-actions">
+          <button class="btn small ${cart.status === 'AVAILABLE' ? '' : 'secondary'}"
+            onclick="setCartStatus('${company.id}','${cart.id}','AVAILABLE')">Available</button>
+          <button class="btn small ${cart.status === 'RENTED' ? '' : 'secondary'}"
+            onclick="setCartStatus('${company.id}','${cart.id}','RENTED')">Rented</button>
+          <button class="btn small ${cart.status === 'MAINTENANCE' ? '' : 'secondary'}"
+            onclick="setCartStatus('${company.id}','${cart.id}','MAINTENANCE')">Maintenance</button>
+          <button class="btn small danger" onclick="deleteCart('${company.id}','${cart.id}')">Remove</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const leadsEl = document.getElementById('companyLeads');
+  const myLeads = data.matches.filter(m => m.companyId === company.id).reverse();
+  if (myLeads.length === 0) {
+    leadsEl.innerHTML = '<div class="empty">No active leads. You\'ll be notified when a matching request comes in.</div>';
+  } else {
+    leadsEl.innerHTML = myLeads.map(m => {
+      const request = data.requests.find(r => r.id === m.requestId);
+      if (!request) return '';
+      const booking = findBookingForMatch(m.id);
+      const cleared = booking && isBookingAutoCleared(booking);
+      const contactReleased = request.status === 'SENT_TO_COMPANY' && request.assignedCompanyId === company.id && !cleared;
+
+      if (cleared) {
+        return `
+          <div class="item" style="opacity:0.7;">
+            <div class="item-header">
+              <div>
+                <div class="item-title">${request.seatCount}-Seater · ${daysBetween(request.startDate, request.endDate)} days</div>
+                <div class="item-meta">${fmtDate(request.startDate)} → ${fmtDate(request.endDate)}</div>
+              </div>
+              <span class="badge completed">Completed</span>
+            </div>
+            <div class="muted" style="margin-top:0.4rem;">✅ Booking complete — customer details are no longer shown.</div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="item">
+          <div class="item-header">
+            <div>
+              <div class="item-title">${request.seatCount}-Seater · ${daysBetween(request.startDate, request.endDate)} days</div>
+              <div class="item-meta">${fmtDate(request.startDate)} → ${fmtDate(request.endDate)}</div>
+            </div>
+            <span class="badge ${m.response.toLowerCase()}">${m.response}</span>
+          </div>
+          ${request.notes ? `<div class="muted" style="margin-top:0.3rem;">Note: ${request.notes}</div>` : ''}
+          ${m.response === 'PENDING' ? `
+            <div class="item-actions">
+              <button class="btn small success" onclick="respondLead('${m.id}','ACCEPTED')">Accept</button>
+              <button class="btn small danger" onclick="respondLead('${m.id}','DECLINED')">Decline</button>
+            </div>
+          ` : ''}
+          ${contactReleased ? `
+            <div class="contact-box">
+              <div class="lbl">✓ Contact Released — reach out to book</div>
+              <div class="row"><span class="k">Name:</span><span class="v">${request.customer.name}</span></div>
+              <div class="row"><span class="k">Email:</span><span class="v"><a href="mailto:${request.customer.email}">${request.customer.email}</a></span></div>
+              <div class="row"><span class="k">Phone:</span><span class="v"><a href="tel:${request.customer.phone}">${request.customer.phone}</a></span></div>
+            </div>
+          ` : (m.response === 'ACCEPTED' ? `
+            <div class="muted" style="margin-top:0.5rem;">✅ Accepted. Waiting for admin to release customer contact.</div>
+          ` : '')}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Billing
+  const billEl = document.getElementById('companyBilling');
+  const myBookings = data.bookings.filter(b => b.companyId === company.id).slice().reverse();
+  let summaryHtml = '';
+  if (company.billingModel === 'COMMISSION') {
+    summaryHtml = `<div class="muted" style="margin-bottom:0.75rem;">
+      You pay <strong>${(company.rate * 100).toFixed(0)}% commission</strong> on each completed rental.
+    </div>`;
+  } else if (company.billingModel === 'SUBSCRIPTION') {
+    summaryHtml = `<div class="muted" style="margin-bottom:0.75rem;">
+      You're on a <strong>$${company.rate}/month subscription</strong> — no commission owed on individual bookings.
+    </div>`;
+  } else {
+    summaryHtml = `<div class="muted" style="margin-bottom:0.75rem;">
+      You pay a flat <strong>$${company.rate} fee per rental</strong>.
+    </div>`;
+  }
+
+  const payStatus = company.paymentStatus || 'pending';
+  const payLabels = {
+    paid: { text: '✅ Paid', cls: 'paid' },
+    pending: { text: '🟡 Pending', cls: 'pay-pending' },
+    outstanding: { text: '🔴 Outstanding', cls: 'outstanding' }
+  };
+  const payInfo = payLabels[payStatus] || payLabels.pending;
+
+  let linesHtml = '';
+  if (myBookings.length === 0) {
+    linesHtml = '<div class="empty">No bookings yet.</div>';
+  } else {
+    linesHtml = myBookings.map(b => {
+      const label = `${fmtDate(b.startDate)} → ${fmtDate(b.endDate)} · $${b.totalAmount} total`;
+      let amountHtml = ''; let desc = '';
+      if (b.status === 'COMPLETED') {
+        if (company.billingModel === 'COMMISSION') {
+          desc = `${label}<span class="muted" style="display:block;font-size:0.78rem;">${(company.rate*100).toFixed(0)}% × $${b.totalAmount} = owed</span>`;
+          amountHtml = `<div class="amt owed">$${b.commissionAmount.toFixed(2)}</div>`;
+        } else if (company.billingModel === 'SUBSCRIPTION') {
+          desc = `${label}<span class="muted" style="display:block;font-size:0.78rem;">Covered by your monthly subscription — no commission</span>`;
+          amountHtml = `<div class="amt covered">$0.00 · covered</div>`;
+        } else {
+          desc = `${label}<span class="muted" style="display:block;font-size:0.78rem;">Flat per-rental fee</span>`;
+          amountHtml = `<div class="amt owed">$${b.commissionAmount.toFixed(2)}</div>`;
+        }
+      } else if (b.status === 'PENDING') {
+        desc = `${label}<span class="muted" style="display:block;font-size:0.78rem;">In progress — charge applied when rental completes</span>`;
+        amountHtml = `<div class="amt covered">pending</div>`;
+      } else {
+        desc = `${label}<span class="muted" style="display:block;font-size:0.78rem;">Cancelled</span>`;
+        amountHtml = `<div class="amt covered">$0.00</div>`;
+      }
+      return `<div class="bill-line"><div class="desc">${desc}</div>${amountHtml}</div>`;
+    }).join('');
+  }
+  const totalOwed = myBookings.filter(b => b.status === 'COMPLETED')
+    .reduce((s, b) => s + (b.commissionAmount || 0), 0);
+
+  billEl.innerHTML = `
+    <div class="flex-between" style="margin-bottom:0.5rem;">
+      <div>Current Payment Status:</div>
+      <span class="badge ${payInfo.cls}" style="font-size:0.8rem;padding:0.25rem 0.75rem;">${payInfo.text}</span>
+    </div>
+    ${summaryHtml}
+    <div style="border:1px solid var(--border); border-radius:8px; padding:0.4rem 0.9rem;">
+      ${linesHtml}
+    </div>
+    <div class="divider"></div>
+    <div class="flex-between">
+      <div><strong>Total currently owed:</strong></div>
+      <div style="font-size:1.15rem; font-weight:700; color:${totalOwed > 0 ? 'var(--danger)' : 'var(--success)'};">
+        $${totalOwed.toFixed(2)}
+      </div>
+    </div>
+  `;
+}
+
+window.setCartStatus = function(companyId, cartId, status) {
+  const company = data.companies.find(c => c.id === companyId);
+  company.carts.find(c => c.id === cartId).status = status;
+  save(); renderAll();
+};
+window.deleteCart = function(companyId, cartId) {
+  if (!confirm('Remove this cart from your fleet?')) return;
+  const company = data.companies.find(c => c.id === companyId);
+  company.carts = company.carts.filter(c => c.id !== cartId);
+  save(); renderAll();
+};
+window.respondLead = function(matchId, response) {
+  const match = data.matches.find(m => m.id === matchId);
+  match.response = response;
+  match.respondedAt = new Date().toISOString();
+  const req = data.requests.find(r => r.id === match.requestId);
+  const co = data.companies.find(c => c.id === match.companyId);
+  save(); renderAll();
+  showBanner(document.getElementById('companyBanner'),
+    response === 'ACCEPTED' ? 'Lead accepted — admin will release customer contact soon.' : 'Lead declined.',
+    response === 'ACCEPTED' ? 'success' : 'info');
+  if (response === 'ACCEPTED') {
+    notifyAdminsAndAgents({
+      type: 'company_accepted',
+      title: `✅ ${co.name} accepted a lead`,
+      body: `${co.name} accepted the ${req.seatCount}-seater request from ${fmtDate(req.startDate)} to ${fmtDate(req.endDate)}.`,
+      severity: 'success', channels: ['inapp', 'email', 'whatsapp']
+    });
+  } else {
+    notifyAdminsAndAgents({
+      type: 'company_declined',
+      title: `❌ ${co.name} declined a lead`,
+      body: `${co.name} declined the ${req.seatCount}-seater request.`,
+      severity: 'warn', channels: ['inapp', 'email', 'whatsapp']
+    });
+  }
+};
+
+function openAddCartModal() {
+  document.getElementById('cartLabel').value = '';
+  document.getElementById('cartSeats').value = '4';
+  document.getElementById('cartError').classList.remove('show');
+  document.getElementById('cartOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('cartLabel').focus(), 50);
+}
+function closeCartModal() { document.getElementById('cartOverlay').classList.remove('show'); }
+function saveCart() {
+  const err = document.getElementById('cartError');
+  const label = document.getElementById('cartLabel').value.trim();
+  if (!label) { err.textContent = 'Cart label is required.'; err.classList.add('show'); return; }
+  const acc = currentAccount();
+  const company = data.companies.find(c => c.accountId === acc.id);
+  company.carts.push({
+    id: uid('cart'), label,
+    seatCount: parseInt(document.getElementById('cartSeats').value, 10),
+    status: 'AVAILABLE'
+  });
+  save(); closeCartModal(); renderAll();
+}
+
+/* ============================================================
+   MATCHING
+   ============================================================ */
+function findMatchingCompanies(seatCount, startDate, endDate) {
+  return data.companies.filter(company => {
+    if (!company.active) return false;
+    const eligible = company.carts.filter(c => c.seatCount == seatCount && c.status === 'AVAILABLE');
+    if (eligible.length === 0) return false;
+    for (const cart of eligible) {
+      const conflicts = data.bookings.filter(b =>
+        b.cartId === cart.id && ['PENDING','ACTIVE'].includes(b.status) &&
+        !(b.endDate < startDate || b.startDate > endDate)
+      );
+      if (conflicts.length === 0) return true;
+    }
+    return false;
+  });
+}
+
+/* ============================================================
+   ADMIN — CONCIERGE REQUESTS
+   ============================================================ */
+function renderConciergeRequests(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const list = (data.conciergeRequests || []).slice().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if (list.length === 0) {
+    el.innerHTML = '<div class="empty">No activity requests yet. When customers ask for snorkeling, fishing, restaurants, or tours — you\'ll see them here.</div>';
+    return;
+  }
+  const statusOptions = ['Noted', 'In Progress', 'Booked', 'Declined'];
+  const badgeMap = {
+    'Noted': 'con-noted', 'In Progress': 'con-progress',
+    'Booked': 'con-booked', 'Declined': 'con-declined'
+  };
+  el.innerHTML = list.map(cr => `
+    <div class="item" style="border-left:3px solid #7c3aed;">
+      <div class="item-header">
+        <div>
+          <div class="item-title">🎉 ${cr.activities.join(', ') || 'Custom request'}</div>
+          <div class="item-meta">
+            ${cr.customer ? `${cr.customer.name} · ${cr.customer.email} · ${cr.customer.phone}` : 'Anonymous visitor'}
+          </div>
+          <div class="item-meta">Requested ${new Date(cr.createdAt).toLocaleString()}</div>
+        </div>
+        <span class="badge ${badgeMap[cr.status] || 'con-noted'}">${cr.status}</span>
+      </div>
+      ${cr.message ? `<div class="muted" style="margin-top:0.4rem; font-style:italic;">"${cr.message}"</div>` : ''}
+      <div class="item-actions">
+        ${statusOptions.filter(s => s !== cr.status).map(s =>
+          `<button class="btn small ${s === 'Booked' ? 'success' : s === 'Declined' ? 'danger' : s === 'In Progress' ? 'warn' : 'info'}"
+            onclick="updateConciergeStatus('${cr.id}','${s}')">Mark ${s}</button>`
+        ).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+window.updateConciergeStatus = function(id, newStatus) {
+  const me = currentAccount();
+  if (!me || (me.role !== 'ADMIN' && me.role !== 'AGENT')) return;
+  const cr = (data.conciergeRequests || []).find(x => x.id === id);
+  if (!cr) return;
+  cr.status = newStatus;
+  cr.updatedAt = new Date().toISOString();
+  cr.updatedBy = me.name;
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'),
+    `✅ Activity request marked "${newStatus}" by ${me.name}`, 'success');
+};
+
+/* ============================================================
+   ADMIN VIEW
+   ============================================================ */
+let adminFilter = 'all';
+document.getElementById('adminFilters').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  document.querySelectorAll('#adminFilters button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  adminFilter = btn.dataset.filter;
+  renderAdminRequests();
+});
+
+function renderAdminView() {
+  const acc = currentAccount();
+  if (!acc || acc.role !== 'ADMIN') return;
+  const pending = data.requests.filter(r => r.status === 'NEW').length;
+  const sent = data.requests.filter(r => r.status === 'SENT_TO_COMPANY').length;
+  const confirmed = data.requests.filter(r => r.status === 'CONFIRMED').length;
+  const revenue = data.bookings.reduce((s, b) => s + (b.commissionAmount || 0), 0);
+  const conciergeCount = (data.conciergeRequests || []).filter(cr => cr.status === 'Noted').length;
+  document.getElementById('adminStats').innerHTML = `
+    <div class="stat"><div class="num">${data.requests.length}</div><div class="lbl">Requests</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent);">${pending}</div><div class="lbl">New</div></div>
+    <div class="stat"><div class="num" style="color:var(--info);">${sent}</div><div class="lbl">Sent</div></div>
+    <div class="stat"><div class="num" style="color:var(--success);">${confirmed}</div><div class="lbl">Confirmed</div></div>
+    <div class="stat"><div class="num" style="color:var(--purple);">${conciergeCount}</div><div class="lbl">Activity Requests</div></div>
+    <div class="stat"><div class="num">$${revenue.toFixed(0)}</div><div class="lbl">Revenue</div></div>
+  `;
+
+  const ae = document.getElementById('adminNotifEmail');
+  const ap = document.getElementById('adminNotifPhone');
+  if (ae) ae.value = acc.notifEmail || '';
+  if (ap) ap.value = acc.notifPhone || '';
+
+  renderConciergeRequests('adminConcierge');
+  renderFinanceDashboard('adminFinanceSummary', 'adminFinanceList');
+  renderAIActivity();
+  renderAccountList();
+  renderAdminRequests();
+  renderAdminCompanies();
+  renderAdminBookings();
+}
+
+function renderAdminRequests() {
+  const el = document.getElementById('adminRequests');
+  let list = [...data.requests].reverse();
+  if (adminFilter !== 'all') list = list.filter(r => r.status === adminFilter);
+  if (list.length === 0) { el.innerHTML = '<div class="empty">No requests match this filter.</div>'; return; }
+  el.innerHTML = list.map(r => {
+    const matches = data.matches.filter(m => m.requestId === r.id);
+    return `
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">${r.seatCount}-Seater · ${fmtDate(r.startDate)} → ${fmtDate(r.endDate)} (${daysBetween(r.startDate, r.endDate)} days)</div>
+            <div class="item-meta">Customer: <strong>${r.customer.name}</strong> · ${r.customer.email} · ${r.customer.phone}</div>
+          </div>
+          <span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+        </div>
+        ${r.notes ? `<div class="muted">Note: ${r.notes}</div>` : ''}
+        <div class="divider"></div>
+        ${matches.length === 0 ? `
+          <div class="muted" style="margin-bottom:0.5rem;">No companies notified yet.</div>
+          <button class="btn small" onclick="notifyCompanies('${r.id}')">🔔 Notify Matching Companies</button>
+        ` : `
+          <div class="muted" style="margin-bottom:0.5rem;">Notified companies:</div>
+          ${matches.map(m => {
+            const co = data.companies.find(c => c.id === m.companyId);
+            return `<div class="flex-between" style="padding:0.3rem 0; border-bottom:1px dashed var(--border);">
+              <div>${co ? co.name : 'Deleted company'}${co && co.fleetTotal ? ` <span class="badge fleet">🚌 ${co.fleetTotal}</span>` : ''} <span class="badge ${m.response.toLowerCase()}">${m.response}</span></div>
+              ${m.response === 'ACCEPTED' && !['SENT_TO_COMPANY','CONFIRMED','COMPLETED'].includes(r.status)
+                ? `<button class="btn small success" onclick="sendContact('${r.id}','${m.id}')">📧 Approve & Share Contact</button>`
+                : ''}
+            </div>`;
+          }).join('')}
+        `}
+      </div>
+    `;
+  }).join('');
+}
+
+window.notifyCompanies = function(requestId) {
+  const req = data.requests.find(r => r.id === requestId);
+  const matching = findMatchingCompanies(req.seatCount, req.startDate, req.endDate);
+  if (matching.length === 0) {
+    return showBanner(document.getElementById('adminBanner'),
+      'No companies currently have available carts for those dates/seat count.', 'error');
+  }
+  matching.forEach(company => {
+    data.matches.push({
+      id: uid('match'), requestId: req.id, companyId: company.id,
+      response: 'PENDING', notifiedAt: new Date().toISOString()
+    });
+    notifyCompany(company.id, {
+      type: 'request_to_company',
+      title: `📤 New Booking Lead for ${company.name}`,
+      body: `You have a new ${req.seatCount}-seater request from ${fmtDate(req.startDate)} to ${fmtDate(req.endDate)} (${daysBetween(req.startDate, req.endDate)} days). Log in to accept or decline.`,
+      severity: 'warn', channels: ['inapp', 'email', 'whatsapp']
+    });
+  });
+  req.status = 'MATCHING';
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'),
+    `Notified ${matching.length} company(ies) — Email + WhatsApp + in-app sent.`, 'success');
+};
+
+window.sendContact = function(requestId, matchId) {
+  const req = data.requests.find(r => r.id === requestId);
+  const match = data.matches.find(m => m.id === matchId);
+  const company = data.companies.find(c => c.id === match.companyId);
+  req.status = 'SENT_TO_COMPANY';
+  req.assignedCompanyId = company.id;
+  const days = daysBetween(req.startDate, req.endDate);
+  const dailyRate = req.seatCount === 6 ? 120 : 80;
+  const totalAmount = days * dailyRate;
+  let commissionAmount = 0;
+  if (company.billingModel === 'COMMISSION') commissionAmount = totalAmount * company.rate;
+  else if (company.billingModel === 'PER_RENTAL') commissionAmount = company.rate;
+  const cart = company.carts.find(c => c.seatCount == req.seatCount && c.status === 'AVAILABLE');
+  data.bookings.push({
+    id: uid('bk'), requestId: req.id, companyId: company.id,
+    customerId: req.customerId, cartId: cart ? cart.id : null,
+    startDate: req.startDate, endDate: req.endDate,
+    dailyRate, totalAmount, commissionAmount,
+    billingModel: company.billingModel,
+    status: 'PENDING', createdAt: new Date().toISOString()
+  });
+  if (cart) cart.status = 'RENTED';
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'),
+    `✅ Contact released to ${company.name}.`, 'success');
+  notifyCompany(company.id, {
+    type: 'contact_released',
+    title: `📧 Customer Contact Ready — ${company.name}`,
+    body: `Admin approved the booking. ${req.customer.name}'s contact info is now available in your portal.`,
+    severity: 'success', channels: ['inapp', 'email', 'whatsapp']
+  });
+};
+
+function renderAdminCompanies() {
+  const el = document.getElementById('adminCompanies');
+  if (data.companies.length === 0) {
+    el.innerHTML = '<div class="empty">No companies yet. Create one from the Account Manager above.</div>';
+    return;
+  }
+  el.innerHTML = data.companies.map(c => {
+    const avail = c.carts.filter(x => x.status === 'AVAILABLE').length;
+    const total = c.carts.length;
+    const acc = data.accounts.find(a => a.id === c.accountId);
+    let model = '';
+    if (c.billingModel === 'COMMISSION') model = `${(c.rate*100).toFixed(0)}% commission`;
+    else if (c.billingModel === 'SUBSCRIPTION') model = `$${c.rate}/mo sub`;
+    else model = `$${c.rate}/rental`;
+    const payStatus = c.paymentStatus || 'pending';
+    const payBadge = payStatus === 'paid' ? 'paid' : payStatus === 'outstanding' ? 'outstanding' : 'pay-pending';
+    const payLabel = payStatus === 'paid' ? '✅ Paid' : payStatus === 'outstanding' ? '🔴 Outstanding' : '🟡 Pending';
+    return `
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">${c.name}${c.fleetTotal ? ` <span class="badge fleet">🚌 ${c.fleetTotal} carts owned</span>` : ''}</div>
+            <div class="item-meta">${c.city || 'No location'} · ${acc ? acc.email : 'no login'}</div>
+            ${c.website ? `<div class="item-meta">🌐 ${c.website}</div>` : ''}
+          </div>
+          <div style="display:flex;gap:0.35rem;flex-wrap:wrap;">
+            <span class="badge ${c.active ? 'available' : 'suspended'}">${c.active ? 'ACTIVE' : 'SUSPENDED'}</span>
+            <span class="badge ${payBadge}">${payLabel}</span>
+          </div>
+        </div>
+        <div class="muted" style="margin-top:0.3rem;">
+          Listed on platform: <strong>${avail}/${total}</strong> available · Billing: <strong>${model}</strong>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAdminBookings() {
+  const el = document.getElementById('adminBookings');
+  if (data.bookings.length === 0) { el.innerHTML = '<div class="empty">No bookings yet.</div>'; return; }
+  el.innerHTML = data.bookings.map(b => {
+    const co = data.companies.find(c => c.id === b.companyId);
+    const req = data.requests.find(r => r.id === b.requestId);
+    const cleared = isBookingAutoCleared(b);
+    const auto = b.clearedReason === 'auto-end-date';
+    const manual = b.clearedReason && b.clearedReason.startsWith('manual');
+    const clearedLabel = auto ? 'Auto-cleared on end date'
+      : manual ? `Manually cleared by ${b.clearedBy || 'admin'}`
+      : '';
+    return `
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">${co ? co.name : 'Unknown'} · ${req ? req.customer.name : 'Customer'}</div>
+            <div class="item-meta">${fmtDate(b.startDate)} → ${fmtDate(b.endDate)} · $${b.dailyRate}/day · Total $${b.totalAmount}</div>
+            ${req ? `<div class="item-meta">📧 ${req.customer.email} · 📞 ${req.customer.phone}</div>` : ''}
+          </div>
+          <span class="badge ${b.status.toLowerCase()}">${b.status}</span>
+        </div>
+        <div class="muted" style="margin-top:0.3rem;">
+          Platform earns: <strong>$${b.commissionAmount.toFixed(2)}</strong> (${b.billingModel})
+        </div>
+        ${cleared ? `<div class="muted" style="margin-top:0.3rem; color:var(--danger);">🔒 ${clearedLabel} — contact removed from company portal.</div>` : ''}
+        <div class="item-actions">
+          ${b.status === 'PENDING' ? `<button class="btn small success" onclick="completeBooking('${b.id}')">Mark Completed</button>` : ''}
+          ${!cleared ? `<button class="btn small danger" onclick="manuallyClearBooking('${b.id}')">🚫 Clear from Company</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+window.completeBooking = function(bookingId) {
+  const bk = data.bookings.find(b => b.id === bookingId);
+  bk.status = 'COMPLETED';
+  bk.contactClearedAt = bk.contactClearedAt || new Date().toISOString();
+  bk.clearedReason = bk.clearedReason || 'manual-admin';
+  bk.clearedBy = bk.clearedBy || (currentAccount() ? currentAccount().name : 'admin');
+  const req = data.requests.find(r => r.id === bk.requestId);
+  if (req) req.status = 'COMPLETED';
+  const company = data.companies.find(c => c.id === bk.companyId);
+  if (company && bk.cartId) {
+    const cart = company.carts.find(c => c.id === bk.cartId);
+    if (cart) cart.status = 'AVAILABLE';
+  }
+  save(); renderAll();
+  showBanner(document.getElementById('adminBanner'),
+    'Booking completed & contact cleared from company portal.', 'success');
+  if (req && company) {
+    notifyAdminsAndAgents({
+      type: 'booking_completed',
+      title: `🏁 Booking Completed — ${company.name}`,
+      body: `${req.customer.name}'s ${req.seatCount}-seater booking (${fmtDate(req.startDate)} → ${fmtDate(req.endDate)}) is complete.`,
+      severity: 'success', channels: ['inapp', 'email', 'whatsapp']
+    });
+  }
+};
+
+/* ============================================================
+   AGENT VIEW
+   ============================================================ */
+function renderAgentView() {
+  const acc = currentAccount();
+  if (!acc || (acc.role !== 'AGENT' && acc.role !== 'ADMIN')) return;
+
+  const ae = document.getElementById('agentNotifEmail');
+  const ap = document.getElementById('agentNotifPhone');
+  if (ae) ae.value = acc.notifEmail || '';
+  if (ap) ap.value = acc.notifPhone || '';
+
+  const pending = data.requests.filter(r => r.status === 'NEW').length;
+  const sent = data.requests.filter(r => r.status === 'SENT_TO_COMPANY').length;
+  const revenue = data.bookings.reduce((s, b) => s + (b.commissionAmount || 0), 0);
+  const conciergeCount = (data.conciergeRequests || []).filter(cr => cr.status === 'Noted').length;
+  document.getElementById('agentStats').innerHTML = `
+    <div class="stat"><div class="num">${data.requests.length}</div><div class="lbl">Requests</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent);">${pending}</div><div class="lbl">New</div></div>
+    <div class="stat"><div class="num" style="color:var(--info);">${sent}</div><div class="lbl">Sent</div></div>
+    <div class="stat"><div class="num" style="color:var(--purple);">${conciergeCount}</div><div class="lbl">Activity Requests</div></div>
+    <div class="stat"><div class="num">$${revenue.toFixed(0)}</div><div class="lbl">Revenue</div></div>
+  `;
+
+  renderConciergeRequests('agentConcierge');
+  renderFinanceDashboard('agentFinanceSummary', 'agentFinanceList');
+
+  const reqEl = document.getElementById('agentRequests');
+  const list = [...data.requests].reverse();
+  if (list.length === 0) { reqEl.innerHTML = '<div class="empty">No requests yet.</div>'; }
+  else {
+    reqEl.innerHTML = list.map(r => `
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">${r.seatCount}-Seater · ${fmtDate(r.startDate)} → ${fmtDate(r.endDate)}</div>
+            <div class="item-meta">Customer: ${r.customer.name} · ${r.customer.email}</div>
+          </div>
+          <span class="badge ${statusClass(r.status)}">${statusLabel(r.status)}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+  const bookEl = document.getElementById('agentBookings');
+  if (data.bookings.length === 0) { bookEl.innerHTML = '<div class="empty">No bookings yet.</div>'; }
+  else {
+    bookEl.innerHTML = data.bookings.map(b => {
+      const co = data.companies.find(c => c.id === b.companyId);
+      const req = data.requests.find(r => r.id === b.requestId);
+      const cleared = isBookingAutoCleared(b);
+      const auto = b.clearedReason === 'auto-end-date';
+      const manual = b.clearedReason && b.clearedReason.startsWith('manual');
+      const clearedLabel = auto ? 'Auto-cleared on end date'
+        : manual ? `Manually cleared by ${b.clearedBy || 'agent'}`
+        : '';
+      return `
+        <div class="item">
+          <div class="item-header">
+            <div>
+              <div class="item-title">${co ? co.name : '—'} · ${req ? req.customer.name : 'Customer'}</div>
+              <div class="item-meta">${fmtDate(b.startDate)} → ${fmtDate(b.endDate)} · $${b.totalAmount}</div>
+            </div>
+            <span class="badge ${b.status.toLowerCase()}">${b.status}</span>
+          </div>
+          <div class="muted">Total $${b.totalAmount} · Commission $${b.commissionAmount.toFixed(2)}</div>
+          ${cleared ? `<div class="muted" style="margin-top:0.3rem; color:var(--danger);">🔒 ${clearedLabel}</div>` : ''}
+          ${!cleared ? `<div class="item-actions">
+            <button class="btn small danger" onclick="manuallyClearBooking('${b.id}')">🚫 Clear from Company</button>
+          </div>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+/* ============================================================
+   AI INSIGHTS + ACTIVITY
+   ============================================================ */
+function getCompanyStats(companyId) {
+  const bkgs = data.bookings.filter(b => b.companyId === companyId);
+  const completed = bkgs.filter(b => b.status === 'COMPLETED');
+  const revenue = completed.reduce((s, b) => s + (b.totalAmount || 0), 0);
+  const ourRevenue = completed.reduce((s, b) => s + (b.commissionAmount || 0), 0);
+  let lastBookingDate = null;
+  if (bkgs.length > 0) {
+    const dates = bkgs.map(b => new Date(b.createdAt || b.startDate));
+    lastBookingDate = new Date(Math.max(...dates));
+  }
+  let daysSinceLastBooking = null;
+  if (lastBookingDate) daysSinceLastBooking = Math.floor((Date.now() - lastBookingDate.getTime()) / 86400000);
+  const matches = data.matches.filter(m => m.companyId === companyId);
+  const accepted = matches.filter(m => m.response === 'ACCEPTED').length;
+  const declined = matches.filter(m => m.response === 'DECLINED').length;
+  const pending = matches.filter(m => m.response === 'PENDING').length;
+  const acceptRate = (accepted + declined) > 0 ? accepted / (accepted + declined) : null;
+  return { totalBookings: bkgs.length, completedCount: completed.length,
+    revenue, ourRevenue, lastBookingDate, daysSinceLastBooking,
+    accepted, declined, pending, acceptRate, notified: matches.length };
+}
+function renderAIActivity() {
+  const tipsEl = document.getElementById('aiTips');
+  const listEl = document.getElementById('companyActivity');
+  if (data.companies.length === 0) {
+    tipsEl.innerHTML = '';
+    listEl.innerHTML = '<div class="empty">No companies yet. Create one from the Account Manager below.</div>';
+    return;
+  }
+  const stats = data.companies.map(c => ({
+    company: c, stats: getCompanyStats(c.id),
+    account: data.accounts.find(a => a.id === c.accountId)
+  }));
+  const tips = [];
+  const neverRented = stats.filter(s => s.company.active && s.stats.totalBookings === 0);
+  if (neverRented.length > 0) {
+    tips.push({
+      level: 'urgent',
+      title: '🚨 These companies have never received a booking',
+      body: `${neverRented.map(s => `<strong>${s.company.name}</strong>${s.company.fleetTotal ? ` (${s.company.fleetTotal} carts)` : ''}`).join(', ')} — consider sending them the next matching request.`
+    });
+  }
+  const coldCompanies = stats.filter(s => s.company.active && s.stats.daysSinceLastBooking !== null && s.stats.daysSinceLastBooking >= 30);
+  if (coldCompanies.length > 0) {
+    tips.push({
+      level: 'warn', title: '⚠️ Companies with no rentals in 30+ days',
+      body: coldCompanies.map(s => `<strong>${s.company.name}</strong> (${s.stats.daysSinceLastBooking} days ago)`).join(', ')
+    });
+  }
+  const topPerformers = stats.filter(s => s.stats.completedCount > 0)
+    .sort((a,b) => b.stats.revenue - a.stats.revenue).slice(0, 3);
+  if (topPerformers.length > 0) {
+    tips.push({
+      level: 'success', title: '⭐ Top performing companies',
+      body: topPerformers.map(s => `<strong>${s.company.name}</strong> ($${s.stats.revenue.toFixed(0)} · ${s.stats.completedCount} rentals)`).join(', ')
+    });
+  }
+  const bigFleets = stats.filter(s => s.company.active && s.company.fleetTotal >= 20)
+    .sort((a,b) => (b.company.fleetTotal || 0) - (a.company.fleetTotal || 0));
+  if (bigFleets.length > 0) {
+    tips.push({
+      level: 'info', title: '🚌 Large groups — who can handle them',
+      body: `For 20+ cart requests: ${bigFleets.map(s => `<strong>${s.company.name}</strong> (${s.company.fleetTotal} carts)`).join(', ')}.`
+    });
+  }
+  const owingCompanies = stats.filter(s => {
+    const info = getCompanyFinanceInfo(s.company.id);
+    return info && info.totalOwed > 0 && info.status !== 'paid';
+  });
+  if (owingCompanies.length > 0) {
+    tips.push({
+      level: 'warn', title: '💰 Companies with unpaid balances',
+      body: owingCompanies.map(s => {
+        const info = getCompanyFinanceInfo(s.company.id);
+        return `<strong>${s.company.name}</strong> ${info.status === 'outstanding' ? '🔴' : '🟡'} $${info.totalOwed.toFixed(2)}`;
+      }).join(', ')
+    });
+  }
+  tipsEl.innerHTML = tips.length === 0 ? '' : tips.map(t => `
+    <div class="ai-tip" style="${t.level === 'urgent' ? 'background:linear-gradient(135deg,#fee2e2,#fecaca);border-color:#dc2626;' : t.level === 'success' ? 'background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-color:#16a34a;' : t.level === 'warn' ? 'background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b;' : 'background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-color:#3b82f6;'}">
+      <div class="ai-label">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
+        AI INSIGHT
+      </div>
+      <div class="ai-body"><strong>${t.title}</strong><br/>${t.body}</div>
+    </div>
+  `).join('');
+
+  const sorted = stats.slice().sort((a,b) => {
+    const scoreOf = s => {
+      if (s.stats.totalBookings === 0) return 0;
+      if (s.stats.daysSinceLastBooking >= 30) return 1;
+      if (s.stats.daysSinceLastBooking >= 14) return 2;
+      return 3;
+    };
+    return (scoreOf(a) - scoreOf(b)) || (b.stats.totalBookings - a.stats.totalBookings);
+  });
+  listEl.innerHTML = sorted.map(s => {
+    const c = s.company;
+    const st = s.stats;
+    let tempClass = 'cold', tempLabel = 'COLD';
+    if (st.totalBookings === 0) { tempClass = 'star'; tempLabel = 'NEVER RENTED'; }
+    else if (st.daysSinceLastBooking === null) { tempClass = 'warm'; tempLabel = 'NEW'; }
+    else if (st.daysSinceLastBooking < 7) { tempClass = 'hot'; tempLabel = 'HOT'; }
+    else if (st.daysSinceLastBooking < 30) { tempClass = 'warm'; tempLabel = 'WARM'; }
+    let model = '';
+    if (c.billingModel === 'COMMISSION') model = `${(c.rate*100).toFixed(0)}% commission`;
+    else if (c.billingModel === 'SUBSCRIPTION') model = `$${c.rate}/mo subscription`;
+    else model = `$${c.rate}/rental fee`;
+    const lastLabel = st.totalBookings === 0
+      ? 'No bookings yet'
+      : st.daysSinceLastBooking === 0 ? 'Last booking today'
+      : st.daysSinceLastBooking === 1 ? 'Last booking yesterday'
+      : `Last booking ${st.daysSinceLastBooking} days ago`;
+    return `
+      <div class="company-stat-card ${tempClass}">
+        <div class="c-left">
+          <div class="c-name">
+            ${c.name}
+            <span class="badge ${tempClass}">${tempLabel}</span>
+            ${c.fleetTotal ? `<span class="badge fleet">🚌 ${c.fleetTotal} Carts Owned</span>` : ''}
+            ${!c.active ? '<span class="badge suspended">SUSPENDED</span>' : ''}
+          </div>
+          <div class="c-meta">
+            ${lastLabel} · ${model}
+            ${st.notified > 0 ? `· ${st.accepted}/${st.notified} leads accepted` : ''}
+          </div>
+        </div>
+        <div class="c-numbers"><div class="c-num">${st.completedCount}</div><div class="c-num-lbl">Rentals Done</div></div>
+        <div class="c-numbers"><div class="c-num" style="color:var(--info);">$${st.revenue.toFixed(0)}</div><div class="c-num-lbl">Gross Revenue</div></div>
+        <div class="c-numbers"><div class="c-num" style="color:var(--accent);">$${st.ourRevenue.toFixed(0)}</div><div class="c-num-lbl">Your Cut</div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function statusClass(s) {
+  return { NEW: 'new', MATCHING: 'matching', SENT_TO_COMPANY: 'sent',
+    CONFIRMED: 'confirmed', COMPLETED: 'completed', CANCELLED: 'declined',
+    PENDING: 'pending', ACTIVE: 'rented' }[s] || 'new';
+}
+function statusLabel(s) {
+  return { NEW: 'New', MATCHING: 'Matching', SENT_TO_COMPANY: 'Sent',
+    CONFIRMED: 'Confirmed', COMPLETED: 'Completed', CANCELLED: 'Cancelled',
+    PENDING: 'Pending', ACTIVE: 'Active' }[s] || s;
+}
+
+function renderAll() {
+  runAutoClearSweep();
+  renderHeader();
+  const acc = currentAccount();
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+  if (acc && acc.role === 'ADMIN') {
+    document.getElementById('view-admin').classList.add('active');
+    renderAdminView();
+  } else if (acc && acc.role === 'COMPANY') {
+    document.getElementById('view-company').classList.add('active');
+    renderCompanyView();
+  } else if (acc && acc.role === 'AGENT') {
+    document.getElementById('view-agent').classList.add('active');
+    renderAgentView();
+  } else {
+    document.getElementById('view-public').classList.add('active');
+    renderCustomerRequests();
+    renderCustomerActivities();
+  }
+  renderNotifBadge();
+  if (document.getElementById('notifPanel').classList.contains('show')) renderNotifPanel();
+}
+
+renderAll();
+(function() {
+  const t = new Date();
+  const s = document.getElementById('custStart');
+  const e = document.getElementById('custEnd');
+  if (s && e) {
+    s.value = t.toISOString().slice(0,10);
+    e.value = new Date(t.getTime() + 7*86400000).toISOString().slice(0,10);
+  }
+})();
+
+setInterval(() => {
+  const before = JSON.stringify(data.bookings.map(b => b.contactClearedAt));
+  runAutoClearSweep();
+  const after = JSON.stringify(data.bookings.map(b => b.contactClearedAt));
+  if (before !== after) renderAll();
+}, 60000);
+
+document.getElementById('loginOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'loginOverlay') closeLogin();
+});
+document.getElementById('setupOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'setupOverlay') closeSetup();
+});
+document.getElementById('accountOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'accountOverlay') closeAccountModal();
+});
+document.getElementById('resetOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'resetOverlay') closeResetModal();
+});
+document.getElementById('cartOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'cartOverlay') closeCartModal();
+});
+document.getElementById('bioPromptOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'bioPromptOverlay') declineBiometric();
+});
+document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') attemptLogin();
+});
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('notifPanel');
+  const bell = document.getElementById('notifBellBtn');
+  if (panel && panel.classList.contains('show')) {
+    if (!panel.contains(e.target) && (!bell || !bell.contains(e.target))) {
+      closeNotifPanel();
+    }
+  }
+});
+</script>
+</body>
+</html>
